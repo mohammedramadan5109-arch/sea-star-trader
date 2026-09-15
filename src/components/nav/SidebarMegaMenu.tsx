@@ -1,3 +1,5 @@
+// src/components/nav/SidebarMegaMenu.tsx
+
 'use client';
 
 import React, { useState } from 'react';
@@ -15,64 +17,92 @@ interface SidebarMegaMenuProps {
   titleHref: string;
   items: MenuItem[];
   hasSubcategories?: boolean;
+  isOpen: boolean;
+  width?: 'small' | 'medium' | 'large' | 'full' | 'wide';
 }
 
 export function SidebarMegaMenu({ 
   title, 
   titleHref, 
   items, 
-  hasSubcategories = false 
+  hasSubcategories = false,
+  isOpen,
+  width = 'wide'
 }: SidebarMegaMenuProps) {
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
 
+  if (!isOpen) return null;
+
   return (
-    <div className="flex">
-      {/* Left sidebar */}
-      <div className="w-64 shrink-0 bg-[var(--navy)]">
-        {items.map((item, index) => (
-          <Link
-            key={item.label}
-            href={item.href}
-            className="block px-4 py-3 text-sm border-l-4 border-transparent hover:bg-[#1D3E5C] text-white"
-            style={{
-              backgroundColor: selectedItem === item.label ? '#1D3E5C' : 'transparent',
-            }}
-            onMouseEnter={() => hasSubcategories && setSelectedItem(item.label)}
+    <div className="flex min-w-[680px]">
+      {/* Left sidebar - Navy Background */}
+      <div className="w-64 shrink-0" style={{ backgroundColor: 'var(--navy)' }}>
+        <div className="p-4 border-b" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>
+          <Link 
+            href={titleHref}
+            className="text-sm font-bold uppercase tracking-wide"
+            style={{ color: 'var(--paper)' }}
           >
-            <div className="flex items-center justify-between">
-              <span>{item.label}</span>
-              {item.count !== undefined && (
-                <span className="text-xs text-gray-400">{item.count}</span>
-              )}
-            </div>
+            {title}
           </Link>
-        ))}
+        </div>
+        
+        <nav>
+          {items.map((item) => (
+            <Link
+              key={item.label}
+              href={item.href}
+              className="block px-4 py-3 text-sm transition-colors"
+              style={{
+                color: 'var(--paper)',
+                backgroundColor: selectedItem === item.label ? 'rgba(255,255,255,0.1)' : 'transparent',
+              }}
+              onMouseEnter={() => hasSubcategories && setSelectedItem(item.label)}
+            >
+              <div className="flex items-center justify-between">
+                <span>{item.label}</span>
+                {item.count !== undefined && (
+                  <span className="text-xs" style={{ color: 'var(--steel-light)' }}>
+                    ({item.count})
+                  </span>
+                )}
+              </div>
+            </Link>
+          ))}
+        </nav>
       </div>
 
-      {/* Right panel - only show for items with children */}
+      {/* Right panel - White Background */}
       {hasSubcategories && (
         <div 
-          className="w-[420px] p-4 grid grid-cols-2 gap-1 content-start max-h-[500px] overflow-y-auto bg-[var(--off-white)]"
+          className="flex-1 p-6 max-h-[500px] overflow-y-auto"
+          style={{ backgroundColor: 'var(--paper)' }}
         >
           {selectedItem ? (
-            items
-              .find((item) => item.label === selectedItem)
-              ?.children?.map((child) => (
-                <Link
-                  key={child.label}
-                  href={child.href}
-                  className="block px-3 py-3 text-sm font-medium rounded-sm hover:bg-[#E8E7E3] text-[var(--navy)]"
-                >
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="flex-1">{child.label}</span>
-                    {child.count !== undefined && (
-                      <span className="text-xs shrink-0 text-gray-500">{child.count}</span>
-                    )}
-                  </div>
-                </Link>
-              ))
+            <div className="grid grid-cols-2 gap-4">
+              {items
+                .find((item) => item.label === selectedItem)
+                ?.children?.map((child) => (
+                  <Link
+                    key={child.label}
+                    href={child.href}
+                    className="block px-3 py-2 text-sm rounded-sm transition-colors hover:bg-gray-50"
+                    style={{ color: 'var(--navy)' }}
+                  >
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="flex-1">{child.label}</span>
+                      {child.count !== undefined && (
+                        <span className="text-xs shrink-0" style={{ color: 'var(--slate)' }}>
+                          ({child.count})
+                        </span>
+                      )}
+                    </div>
+                  </Link>
+                ))
+              }
+            </div>
           ) : (
-            <div className="col-span-2 text-center py-12 text-sm text-[var(--slate)]">
+            <div className="text-center py-12 text-sm" style={{ color: 'var(--slate)' }}>
               Hover over a category to see subcategories
             </div>
           )}
@@ -81,16 +111,22 @@ export function SidebarMegaMenu({
 
       {/* Simple panel for services/how-it-works (no subcategories) */}
       {!hasSubcategories && (
-        <div className="w-64 p-4 bg-[var(--off-white)]">
-          {items.map((item) => (
-            <Link
-              key={item.label}
-              href={item.href}
-              className="block px-3 py-3 text-sm font-medium rounded-sm hover:bg-[#E8E7E3] text-[var(--navy)]"
-            >
-              {item.label}
-            </Link>
-          ))}
+        <div 
+          className="flex-1 p-6"
+          style={{ backgroundColor: 'var(--paper)' }}
+        >
+          <div className="space-y-2">
+            {items.map((item) => (
+              <Link
+                key={item.label}
+                href={item.href}
+                className="block px-4 py-3 text-sm font-medium rounded-sm hover:bg-gray-50"
+                style={{ color: 'var(--navy)' }}
+              >
+                {item.label}
+              </Link>
+            ))}
+          </div>
         </div>
       )}
     </div>

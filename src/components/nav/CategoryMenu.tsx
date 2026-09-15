@@ -1,3 +1,5 @@
+// src/components/nav/CategoryMenu.tsx
+
 'use client';
 
 import React from 'react';
@@ -13,8 +15,6 @@ interface CategoryMenuProps {
 export function CategoryMenu({ isOpen, onClose }: CategoryMenuProps) {
   const { data: categories, isLoading } = useCategoryTree();
 
-  if (!isOpen) return null;
-
   const menuItems = categories?.map((cat) => ({
     label: cat.name,
     href: `/listings?category=${cat.slug}`,
@@ -27,12 +27,14 @@ export function CategoryMenu({ isOpen, onClose }: CategoryMenuProps) {
   })) || [];
 
   return (
-    <MegaMenu isOpen={isOpen} width="wide">
+    <MegaMenu isOpen={isOpen} onClose={onClose} width="wide">
       <SidebarMegaMenu
-        title="All categories"
+        title="All Categories"
         titleHref="/listings"
         items={menuItems}
-        hasSubcategories
+        hasSubcategories={true}
+        isOpen={isOpen}
+        width="wide"
       />
     </MegaMenu>
   );
