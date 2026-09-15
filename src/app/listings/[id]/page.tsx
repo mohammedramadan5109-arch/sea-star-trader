@@ -1,3 +1,5 @@
+// src/app/listings/[id]/page.tsx
+
 import { notFound } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import Image from 'next/image';
@@ -67,7 +69,8 @@ export default async function ListingDetailPage({
               </div>
               {listing.photos.length > 1 && (
                 <div className="grid grid-cols-4 gap-2">
-                  {listing.photos.slice(1, 5).map((photo, index) => (
+                  {/* ✅ FIXED: Added type annotations */}
+                  {listing.photos.slice(1, 5).map((photo: string, index: number) => (
                     <div
                       key={index}
                       className="relative h-24 rounded-sm overflow-hidden border border-[var(--line)]"

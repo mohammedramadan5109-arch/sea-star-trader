@@ -40,3 +40,71 @@ a {
   color: inherit;
   text-decoration: none;
 }
+
+/* Hover effects for career, help, and press pages */
+.career-card {
+  transition: box-shadow 0.3s ease;
+}
+
+.career-card:hover {
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.job-listing {
+  transition: border-color 0.3s ease;
+}
+
+.job-listing:hover {
+  border-color: var(--orange) !important;
+}
+
+.help-category {
+  transition: border-color 0.3s ease;
+}
+
+.help-category:hover {
+  border-color: var(--orange) !important;
+}
+
+.faq-item button {
+  transition: background-color 0.2s ease;
+}
+
+.faq-item button:hover {
+  background-color: var(--off-white);
+}
+
+.guide-card {
+  transition: background-color 0.3s ease;
+}
+
+.guide-card:hover {
+  background-color: var(--steel-light);
+}
+
+.press-release {
+  transition: border-color 0.3s ease;
+}
+
+.press-release:hover {
+  border-color: var(--orange) !important;
+}
+/* Add to end of src/app/globals.css */
+
+.career-card {
+  transition: all 0.2s ease;
+}
+
+.career-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.job-listing {
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.job-listing:hover {
+  border-color: var(--orange) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}

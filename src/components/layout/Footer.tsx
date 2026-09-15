@@ -1,3 +1,5 @@
+// src/components/layout/Footer.tsx
+
 'use client';
 
 import Link from 'next/link';
@@ -28,6 +30,7 @@ export function Footer() {
     <footer style={{ backgroundColor: 'var(--off-white)' }}>
       <div className="max-w-6xl mx-auto px-6 pt-16 pb-8">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-10 mb-12">
+          {/* Brand */}
           <div className="md:col-span-1">
             <div className="text-xl font-extrabold mb-3" style={{ color: 'var(--ink)' }}>
               Sea<span style={{ color: 'var(--orange)' }}>Star</span>Trader
@@ -37,6 +40,7 @@ export function Footer() {
             </p>
           </div>
 
+          {/* Marketplace */}
           <div>
             <div
               className="text-xs font-bold uppercase tracking-wide mb-3"
@@ -46,18 +50,71 @@ export function Footer() {
             </div>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="/listings" style={{ color: 'var(--slate)' }}>
-                  Inventory
+                <Link href="/listings" style={{ color: 'var(--slate)' }} className="hover:text-orange-600 transition-colors">
+                  Browse Equipment
                 </Link>
               </li>
               <li>
-                <Link href="/sell" style={{ color: 'var(--slate)' }}>
+                <Link href="/auctions" style={{ color: 'var(--slate)' }} className="hover:text-orange-600 transition-colors">
+                  Auctions
+                </Link>
+              </li>
+              <li>
+                <Link href="/sell" style={{ color: 'var(--slate)' }} className="hover:text-orange-600 transition-colors">
                   Sell Equipment
+                </Link>
+              </li>
+              <li>
+                <Link href="/map" style={{ color: 'var(--slate)' }} className="hover:text-orange-600 transition-colors">
+                  Equipment Map
+                </Link>
+              </li>
+              <li>
+                <Link href="/how-it-works" style={{ color: 'var(--slate)' }} className="hover:text-orange-600 transition-colors">
+                  How It Works
                 </Link>
               </li>
             </ul>
           </div>
 
+          {/* Services */}
+          <div>
+            <div
+              className="text-xs font-bold uppercase tracking-wide mb-3"
+              style={{ color: 'var(--navy)' }}
+            >
+              Services
+            </div>
+            <ul className="space-y-2 text-sm">
+              <li>
+                <Link href="/services" style={{ color: 'var(--slate)' }} className="hover:text-orange-600 transition-colors">
+                  All Services
+                </Link>
+              </li>
+              <li>
+                <Link href="/services/shipping-logistics" style={{ color: 'var(--slate)' }} className="hover:text-orange-600 transition-colors">
+                  Shipping & Logistics
+                </Link>
+              </li>
+              <li>
+                <Link href="/financing" style={{ color: 'var(--slate)' }} className="hover:text-orange-600 transition-colors">
+                  Financing
+                </Link>
+              </li>
+              <li>
+                <Link href="/services/inspection-certification" style={{ color: 'var(--slate)' }} className="hover:text-orange-600 transition-colors">
+                  Inspection
+                </Link>
+              </li>
+              <li>
+                <Link href="/services/insurance" style={{ color: 'var(--slate)' }} className="hover:text-orange-600 transition-colors">
+                  Insurance
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Company */}
           <div>
             <div
               className="text-xs font-bold uppercase tracking-wide mb-3"
@@ -67,49 +124,34 @@ export function Footer() {
             </div>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="/services" style={{ color: 'var(--slate)' }}>
-                  Services
+                <Link href="/about" style={{ color: 'var(--slate)' }} className="hover:text-orange-600 transition-colors">
+                  About Us
                 </Link>
               </li>
               <li>
-                <Link href="/financing" style={{ color: 'var(--slate)' }}>
-                  Financing
+                <Link href="/careers" style={{ color: 'var(--slate)' }} className="hover:text-orange-600 transition-colors">
+                  Careers
                 </Link>
               </li>
               <li>
-                <Link href="/about" style={{ color: 'var(--slate)' }}>
-                  About
+                <Link href="/press" style={{ color: 'var(--slate)' }} className="hover:text-orange-600 transition-colors">
+                  Press & Media
                 </Link>
               </li>
               <li>
-                <Link href="/contact" style={{ color: 'var(--slate)' }}>
+                <Link href="/contact" style={{ color: 'var(--slate)' }} className="hover:text-orange-600 transition-colors">
                   Contact
                 </Link>
               </li>
-            </ul>
-          </div>
-
-          <div>
-            <div
-              className="text-xs font-bold uppercase tracking-wide mb-3"
-              style={{ color: 'var(--navy)' }}
-            >
-              Legal
-            </div>
-            <ul className="space-y-2 text-sm">
               <li>
-                <Link href="/legal/privacy" style={{ color: 'var(--slate)' }}>
-                  Privacy Policy
-                </Link>
-              </li>
-              <li>
-                <Link href="/legal/terms" style={{ color: 'var(--slate)' }}>
-                  Terms of Service
+                <Link href="/help" style={{ color: 'var(--slate)' }} className="hover:text-orange-600 transition-colors">
+                  Help & Support
                 </Link>
               </li>
             </ul>
           </div>
 
+          {/* Newsletter */}
           <div>
             <div
               className="text-xs font-bold uppercase tracking-wide mb-3"
@@ -134,15 +176,38 @@ export function Footer() {
               <button
                 type="submit"
                 disabled={loading}
-                className="px-4 py-2 text-sm font-semibold rounded-sm disabled:opacity-50"
+                className="px-4 py-2 text-sm font-semibold rounded-sm disabled:opacity-50 hover:opacity-90 transition-opacity"
                 style={{ backgroundColor: 'var(--orange)', color: 'var(--paper)' }}
               >
                 {loading ? 'Signing up...' : 'Sign Up'}
               </button>
             </form>
+            
+            {/* Legal Links */}
+            <div className="mt-6">
+              <div
+                className="text-xs font-bold uppercase tracking-wide mb-2"
+                style={{ color: 'var(--navy)' }}
+              >
+                Legal
+              </div>
+              <ul className="space-y-2 text-sm">
+                <li>
+                  <Link href="/legal/privacy" style={{ color: 'var(--slate)' }} className="hover:text-orange-600 transition-colors">
+                    Privacy Policy
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/legal/terms" style={{ color: 'var(--slate)' }} className="hover:text-orange-600 transition-colors">
+                    Terms of Service
+                  </Link>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
 
+        {/* Bottom Bar */}
         <div
           className="pt-6 flex flex-wrap items-center justify-between gap-4 text-sm"
           style={{ borderTop: '1px solid var(--line)', color: 'var(--slate)' }}
@@ -152,7 +217,7 @@ export function Footer() {
             <span>Europe: +31 10 555 0177</span>
             <span>Asia-Pacific: +61 7 5550 199</span>
           </div>
-          <span>© 2026 SeaStarTrader. All rights reserved.</span>
+          <span>© {new Date().getFullYear()} SeaStarTrader. All rights reserved.</span>
         </div>
       </div>
     </footer>

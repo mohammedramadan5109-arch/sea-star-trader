@@ -1,3 +1,5 @@
+// src/components/admin/ValuationRequestsQueue.tsx
+
 'use client';
 
 import { Badge } from '@/components/ui/Badge';
@@ -98,13 +100,14 @@ export function ValuationRequestsQueue({
 
           {request.status === 'pending' && (
             <div className="pt-4 border-t border-[var(--line)] flex gap-3">
+              {/* ✅ FIXED: Removed size prop since it's not in ButtonProps */}
               {onMarkContacted && (
-                <Button onClick={() => onMarkContacted(request.id)} size="sm">
+                <Button onClick={() => onMarkContacted(request.id)}>
                   Mark as Contacted
                 </Button>
               )}
               {onConvertToListing && (
-                <Button onClick={() => onConvertToListing(request.id)} variant="outline" size="sm">
+                <Button onClick={() => onConvertToListing(request.id)} variant="outline">
                   Convert to Listing
                 </Button>
               )}

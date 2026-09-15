@@ -1,3 +1,5 @@
+// src/components/admin/EquipmentListingsQueue.tsx
+
 'use client';
 
 import { Badge } from '@/components/ui/Badge';
@@ -86,13 +88,14 @@ export function EquipmentListingsQueue({
 
           {listing.status === 'pending' && (
             <div className="pt-4 border-t border-[var(--line)] flex gap-3">
+              {/* ✅ FIXED: Removed size prop since it's not in ButtonProps */}
               {onApprove && (
-                <Button onClick={() => onApprove(listing.id)} size="sm">
+                <Button onClick={() => onApprove(listing.id)}>
                   Approve
                 </Button>
               )}
               {onReject && (
-                <Button onClick={() => onReject(listing.id)} variant="outline" size="sm">
+                <Button onClick={() => onReject(listing.id)} variant="outline">
                   Reject
                 </Button>
               )}
