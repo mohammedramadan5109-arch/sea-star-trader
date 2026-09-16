@@ -29,7 +29,7 @@ export function SidebarMegaMenu({
 
   return (
     <div className="flex">
-      {/* Left Column - Navy */}
+      {/* Left Column - Navy - Categories */}
       <div className="w-64" style={{ backgroundColor: 'var(--navy)' }}>
         {/* Title */}
         <div className="p-4 border-b" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>
@@ -66,12 +66,18 @@ export function SidebarMegaMenu({
         </nav>
       </div>
 
-      {/* Right Column - White */}
-      <div className="w-80 p-6" style={{ backgroundColor: 'var(--off-white)' }}>
+      {/* Right Column - Off-white - Subcategories in TWO COLUMNS */}
+      <div 
+        className="p-6"
+        style={{ 
+          backgroundColor: 'var(--off-white)',
+          minWidth: '450px'
+        }}
+      >
         {hasSubcategories ? (
-          // Show subcategories on hover
+          // Show subcategories in TWO COLUMNS on hover
           hoveredItem ? (
-            <div className="space-y-1">
+            <div className="grid grid-cols-2 gap-x-4 gap-y-1">
               {items
                 .find((item) => item.label === hoveredItem)
                 ?.children?.map((child) => (
@@ -81,10 +87,10 @@ export function SidebarMegaMenu({
                     className="block px-3 py-2 text-sm rounded hover:bg-white transition-colors"
                     style={{ color: 'var(--navy)' }}
                   >
-                    <div className="flex items-center justify-between">
-                      <span>{child.label}</span>
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="truncate">{child.label}</span>
                       {child.count !== undefined && (
-                        <span className="text-xs" style={{ color: 'var(--slate)' }}>
+                        <span className="text-xs flex-shrink-0" style={{ color: 'var(--slate)' }}>
                           ({child.count})
                         </span>
                       )}
@@ -99,7 +105,7 @@ export function SidebarMegaMenu({
             </div>
           )
         ) : (
-          // Simple list for services/how-it-works
+          // Simple single-column list for services/how-it-works
           <div className="space-y-1">
             {items.map((item) => (
               <Link

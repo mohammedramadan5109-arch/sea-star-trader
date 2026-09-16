@@ -28,7 +28,7 @@ export function MegaMenu({ children, isOpen, onClose }: MegaMenuProps) {
         className="absolute left-0 top-full mt-2 z-50 bg-white shadow-xl"
         style={{ 
           border: '1px solid var(--line)',
-          minWidth: '600px'
+          minWidth: '700px'
         }}
       >
         {children}
