@@ -1,3 +1,5 @@
+// src/components/nav/HowItWorksMenu.tsx
+
 'use client';
 
 import React from 'react';
@@ -19,12 +21,13 @@ export function HowItWorksMenu({ isOpen, onClose }: HowItWorksMenuProps) {
   }));
 
   return (
-    <MegaMenu isOpen={isOpen} width="medium">
+    <MegaMenu isOpen={isOpen} onClose={onClose} width="medium">
       <SidebarMegaMenu
         title="Getting started"
         titleHref="/how-it-works"
         items={menuItems}
         hasSubcategories={false}
+        isOpen={isOpen}
       />
     </MegaMenu>
   );

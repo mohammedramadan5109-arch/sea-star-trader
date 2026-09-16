@@ -1,3 +1,5 @@
+// src/components/nav/ServicesMenu.tsx
+
 'use client';
 
 import React from 'react';
@@ -19,12 +21,13 @@ export function ServicesMenu({ isOpen, onClose }: ServicesMenuProps) {
   }));
 
   return (
-    <MegaMenu isOpen={isOpen} width="medium">
+    <MegaMenu isOpen={isOpen} onClose={onClose} width="medium">
       <SidebarMegaMenu
         title="All services"
         titleHref="/services"
         items={menuItems}
         hasSubcategories={false}
+        isOpen={isOpen}
       />
     </MegaMenu>
   );
