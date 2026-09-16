@@ -1,10 +1,12 @@
+// src/app/(marketing)/sell/page.tsx
+
 'use client';
 
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { PhotoUploader } from '@/components/sell/PhotoUploader';
+import { BulkPhotoUploader } from '@/components/sell/BulkPhotoUploader';
 import { FormField } from '@/components/forms/FormField';
 import { FormSection } from '@/components/forms/FormSection';
 import { Input } from '@/components/ui/Input';
@@ -17,7 +19,6 @@ import { createClient } from '@/lib/supabase/client';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 
-// Define schema directly here to avoid import issues
 const sellEquipmentSchema = z.object({
   equipment_type: z.string().min(1, 'Equipment type is required'),
   category: z.string().min(1, 'Category is required'),
@@ -30,7 +31,7 @@ const sellEquipmentSchema = z.object({
   }),
   location: z.string().min(1, 'Location is required'),
   description: z.string().optional(),
-  asking_price: z.string().optional(), // Changed to string, will convert to number
+  asking_price: z.string().optional(),
 });
 
 type SellEquipmentFormData = z.infer<typeof sellEquipmentSchema>;
@@ -55,11 +56,9 @@ export default function SellPage() {
     console.log('=== FORM SUBMIT STARTED ===');
     console.log('Form data:', data);
     console.log('Photos count:', photos.length);
-    console.log('Validation errors:', errors);
 
     if (photos.length === 0) {
       toast.error('Please upload at least one photo');
-      console.log('Blocked: No photos uploaded');
       return;
     }
 
@@ -76,7 +75,6 @@ export default function SellPage() {
         return;
       }
 
-      // Convert asking_price to number if provided
       const askingPrice = data.asking_price ? parseFloat(data.asking_price) : null;
 
       const insertData = {
@@ -113,7 +111,6 @@ export default function SellPage() {
       console.log('Success! Listing created:', listing.id);
       toast.success('Equipment submitted for review! We will contact you within 24 hours.');
       
-      // Use window.location for guaranteed redirect
       window.location.href = '/my-listings';
     } catch (error: any) {
       console.error('=== SUBMISSION ERROR ===', error);
@@ -123,7 +120,6 @@ export default function SellPage() {
     }
   };
 
-  // Get subcategories based on selected category
   const categoryName = Object.keys(CATEGORY_SLUGS).find(
     (key) => CATEGORY_SLUGS[key] === categoryValue
   );
@@ -227,49 +223,78 @@ export default function SellPage() {
         </FormSection>
 
         <FormSection
-  title="Location & Pricing"
-  description="Where is the equipment located and what is your asking price?"
->
-  <FormField label="Location" error={errors.location?.message} required>
-    <Input
-      {...register('location')}
-      placeholder="City, State/Province, Country"
-      error={errors.location?.message}
-    />
-  </FormField>
-
-  <FormField label="Asking Price (USD)" error={errors.asking_price?.message}>
-    <Input
-      {...register('asking_price')}
-      type="number"
-      placeholder="e.g. 125000"
-      error={errors.asking_price?.message}
-    />
-  </FormField>
-</FormSection>
-
-        <FormSection
-          title="Photos"
-          description="Upload photos of your equipment (at least 1, maximum 10)"
+          title="Location & Pricing"
+          description="Where is the equipment located and what is your asking price?"
         >
-          <PhotoUploader onPhotosChange={setPhotos} maxPhotos={10} />
+          <FormField label="Location" error={errors.location?.message} required>
+            <Input
+              {...register('location')}
+              placeholder="City, State/Province, Country"
+              error={errors.location?.message}
+            />
+          </FormField>
+
+          <FormField label="Asking Price (USD)" error={errors.asking_price?.message}>
+            <Input
+              {...register('asking_price')}
+              type="number"
+              placeholder="e.g. 125000"
+              error={errors.asking_price?.message}
+            />
+          </FormField>
+        </FormSection>
+
+        {/* UPDATED: Bulk Photo Upload Section */}
+        <FormSection
+          title="Equipment Photos"
+          description="Upload 70-100 high-quality photos of your equipment from all angles"
+        >
+          <BulkPhotoUploader 
+            onPhotosChange={setPhotos}
+            maxPhotos={100}
+          />
+          
           {photos.length === 0 && (
-            <p className="text-xs text-red-600">At least one photo is required</p>
+            <p className="text-sm font-semibold" style={{ color: 'var(--orange)' }}>
+              ⚠️ At least one photo is required
+            </p>
           )}
-          {photos.length > 0 && (
-            <p className="text-xs text-green-600">✓ {photos.length} photo(s) uploaded</p>
+          
+          {photos.length > 0 && photos.length < 70 && (
+            <p className="text-sm" style={{ color: 'var(--slate)' }}>
+              📸 {photos.length} photos uploaded. Consider uploading 70-100 photos for best results.
+            </p>
+          )}
+          
+          {photos.length >= 70 && (
+            <p className="text-sm font-semibold" style={{ color: '#10b981' }}>
+              ✓ {photos.length} photos uploaded - Excellent! This will help buyers see every detail.
+            </p>
           )}
         </FormSection>
 
         <div className="flex gap-4">
-          <Button type="submit" disabled={loading} className="flex-1">
+          <Button 
+            type="submit" 
+            disabled={loading || photos.length === 0} 
+            className="flex-1"
+            style={{
+              backgroundColor: 'var(--orange)',
+              color: 'var(--paper)'
+            }}
+          >
             {loading ? 'Submitting...' : 'Submit Equipment for Review'}
           </Button>
+          
           <Button
             type="button"
             variant="outline"
             onClick={() => router.back()}
             disabled={loading}
+            style={{
+              border: `2px solid var(--navy)`,
+              color: 'var(--navy)'
+            }}
           >
             Cancel
           </Button>
