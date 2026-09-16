@@ -13,7 +13,7 @@ interface CategoryMenuProps {
 }
 
 export function CategoryMenu({ isOpen, onClose }: CategoryMenuProps) {
-  const { data: categories, isLoading } = useCategoryTree();
+  const { data: categories } = useCategoryTree();
 
   const menuItems = categories?.map((cat) => ({
     label: cat.name,
@@ -27,14 +27,12 @@ export function CategoryMenu({ isOpen, onClose }: CategoryMenuProps) {
   })) || [];
 
   return (
-    <MegaMenu isOpen={isOpen} onClose={onClose} width="wide">
+    <MegaMenu isOpen={isOpen} onClose={onClose}>
       <SidebarMegaMenu
         title="All Categories"
         titleHref="/listings"
         items={menuItems}
         hasSubcategories={true}
-        isOpen={isOpen}
-        width="wide"
       />
     </MegaMenu>
   );

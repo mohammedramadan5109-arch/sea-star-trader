@@ -1,5 +1,8 @@
+// src/components/nav/AuctionsComingSoon.tsx
+
 'use client';
 
+import React from 'react';
 import { MegaMenu } from './MegaMenu';
 
 interface AuctionsComingSoonProps {
@@ -8,24 +11,24 @@ interface AuctionsComingSoonProps {
 }
 
 export function AuctionsComingSoon({ isOpen, onClose }: AuctionsComingSoonProps) {
-  if (!isOpen) return null;
-
   return (
-    <MegaMenu isOpen={isOpen} onClose={onClose} width="medium">
-      <div className="w-full p-8 text-center bg-[var(--off-white)]">
-        <div
-          className="inline-block px-3 py-1 rounded-full text-xs font-bold mb-3"
-          style={{ backgroundColor: 'var(--orange)', color: 'var(--paper)' }}
-        >
-          COMING SOON
+    <MegaMenu isOpen={isOpen} onClose={onClose}>
+      <div className="p-8 text-center" style={{ backgroundColor: 'var(--off-white)' }}>
+        <div className="max-w-md mx-auto">
+          <div className="text-4xl mb-4">⏳</div>
+          <h3 className="text-xl font-bold mb-2" style={{ color: 'var(--navy)' }}>
+            Auctions Coming Soon
+          </h3>
+          <p className="text-sm" style={{ color: 'var(--slate)' }}>
+            Our live auction platform is launching soon. Register your interest to be notified when we go live.
+          </p>
+          <button 
+            className="mt-6 px-6 py-2 text-sm font-semibold rounded-sm"
+            style={{ backgroundColor: 'var(--orange)', color: 'var(--paper)' }}
+          >
+            Get Notified
+          </button>
         </div>
-        <h3 className="text-lg font-bold mb-2 text-[var(--navy)]">
-          Live auctions launching soon
-        </h3>
-        <p className="text-sm max-w-md mx-auto text-[var(--slate)]">
-          We're building unreserved and timed auction features. Join our mailing list to be
-          notified when bidding goes live.
-        </p>
       </div>
     </MegaMenu>
   );

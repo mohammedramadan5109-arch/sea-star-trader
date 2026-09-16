@@ -13,21 +13,18 @@ interface HowItWorksMenuProps {
 }
 
 export function HowItWorksMenu({ isOpen, onClose }: HowItWorksMenuProps) {
-  if (!isOpen) return null;
-
   const menuItems = HOW_IT_WORKS.map((item) => ({
     label: item,
     href: HOW_IT_WORKS_HREFS[item],
   }));
 
   return (
-    <MegaMenu isOpen={isOpen} onClose={onClose} width="medium">
+    <MegaMenu isOpen={isOpen} onClose={onClose}>
       <SidebarMegaMenu
-        title="Getting started"
+        title="Getting Started"
         titleHref="/how-it-works"
         items={menuItems}
         hasSubcategories={false}
-        isOpen={isOpen}
       />
     </MegaMenu>
   );

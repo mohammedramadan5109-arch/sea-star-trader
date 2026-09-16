@@ -13,21 +13,18 @@ interface ServicesMenuProps {
 }
 
 export function ServicesMenu({ isOpen, onClose }: ServicesMenuProps) {
-  if (!isOpen) return null;
-
   const menuItems = SERVICES.map((service) => ({
     label: service,
     href: `/services/${SERVICE_SLUGS[service]}`,
   }));
 
   return (
-    <MegaMenu isOpen={isOpen} onClose={onClose} width="medium">
+    <MegaMenu isOpen={isOpen} onClose={onClose}>
       <SidebarMegaMenu
-        title="All services"
+        title="All Services"
         titleHref="/services"
         items={menuItems}
         hasSubcategories={false}
-        isOpen={isOpen}
       />
     </MegaMenu>
   );
