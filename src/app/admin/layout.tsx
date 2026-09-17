@@ -1,116 +1,70 @@
+import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
-import Link from 'next/link';
 
-export default async function AdminLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+const NAV = [
+  { href: '/admin', label: 'Dashboard' },
+  { href: '/admin/users', label: 'Users' },
+  { href: '/admin/bidding-requests', label: 'Bidding requests' },
+  { href: '/admin/valuation-requests', label: 'Valuation requests' },
+  { href: '/admin/listings', label: 'Listings' },
+  { href: '/admin/auctions', label: 'Auctions' },
+  { href: '/admin/orders', label: 'Orders' },
+];
+
+const ADMIN_THEME = {
+  '--admin-bg': '#0B0F17',
+  '--admin-surface': '#121A28',
+  '--admin-border': '#1E2836',
+  '--admin-text': '#EAEDF2',
+  '--admin-text-muted': '#8A94A6',
+  '--admin-accent': '#F2A93B',
+} as React.CSSProperties;
+
+export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  if (!user) {
-    redirect('/login');
-  }
+  if (!user) redirect('/login');
 
-  // Check if user is admin
-  const { data: profile, error } = await supabase
+  // Same admin check as actions.ts — see the TODO there if this
+  // doesn't match how your app flags admins.
+  const { data: profile } = await supabase
     .from('profiles')
     .select('role')
     .eq('id', user.id)
     .single();
 
-  console.log('Admin Layout Check:', {
-    userId: user.id,
-    profile,
-    error: error?.message,
-  });
-
-  if (error) {
-    console.error('Profile fetch error:', error);
-    redirect('/');
-  }
-
-  if (!profile || profile.role !== 'admin') {
-    console.log('Not admin, role is:', profile?.role);
-    redirect('/');
-  }
+  if (profile?.role !== 'admin') redirect('/dashboard');
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: 'var(--paper)' }}>
-      <header className="border-b" style={{ backgroundColor: 'var(--off-white)', borderColor: 'var(--line)' }}>
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link href="/" className="text-2xl font-extrabold" style={{ color: 'var(--ink)' }}>
-            Sea<span style={{ color: 'var(--orange)' }}>Star</span>Trader
-            <span className="ml-2 text-xs px-2 py-1 rounded-sm bg-[var(--orange)] text-white">ADMIN</span>
-          </Link>
-          <div className="flex items-center gap-4">
-            <span className="text-sm" style={{ color: 'var(--slate)' }}>{user.email}</span>
-            <Link href="/" className="text-sm font-semibold" style={{ color: 'var(--navy)' }}>
-              View Site
-            </Link>
-            <form action="/auth/signout" method="post">
-              <button type="submit" className="text-sm font-semibold" style={{ color: 'var(--orange)' }}>
-                Sign Out
-              </button>
-            </form>
-          </div>
+    <div
+      className="min-h-screen flex"
+      style={{ ...ADMIN_THEME, backgroundColor: 'var(--admin-bg)' }}
+    >
+      <aside
+        className="w-60 shrink-0 border-r px-4 py-6 hidden md:block"
+        style={{ borderColor: 'var(--admin-border)' }}
+      >
+        <div className="text-lg font-bold px-2 mb-8" style={{ color: 'var(--admin-text)' }}>
+          SeaStarTrader
         </div>
-      </header>
-
-      <div className="max-w-7xl mx-auto px-6 py-8 flex gap-8">
-        <aside className="w-64 shrink-0">
-          <nav className="space-y-1">
+        <nav className="space-y-1">
+          {NAV.map((item) => (
             <Link
-              href="/admin"
-              className="block px-4 py-2 text-sm font-medium rounded-sm hover:bg-[var(--off-white)]"
-              style={{ color: 'var(--navy)' }}
+              key={item.href}
+              href={item.href}
+              className="block rounded-md px-3 py-2 text-sm font-medium hover:opacity-80"
+              style={{ color: 'var(--admin-text-muted)' }}
             >
-              Dashboard
+              {item.label}
             </Link>
-            <Link
-              href="/admin/users"
-              className="block px-4 py-2 text-sm font-medium rounded-sm hover:bg-[var(--off-white)]"
-              style={{ color: 'var(--navy)' }}
-            >
-              Users
-            </Link>
-            <Link
-              href="/admin/valuation-requests"
-              className="block px-4 py-2 text-sm font-medium rounded-sm hover:bg-[var(--off-white)]"
-              style={{ color: 'var(--navy)' }}
-            >
-              Valuation Requests
-            </Link>
-            <Link
-              href="/admin/listings"
-              className="block px-4 py-2 text-sm font-medium rounded-sm hover:bg-[var(--off-white)]"
-              style={{ color: 'var(--navy)' }}
-            >
-              Listings
-            </Link>
-            <Link
-              href="/admin/auctions"
-              className="block px-4 py-2 text-sm font-medium rounded-sm hover:bg-[var(--off-white)]"
-              style={{ color: 'var(--navy)' }}
-            >
-              Auctions
-            </Link>
-            <Link
-              href="/admin/orders"
-              className="block px-4 py-2 text-sm font-medium rounded-sm hover:bg-[var(--off-white)]"
-              style={{ color: 'var(--navy)' }}
-            >
-              Orders
-            </Link>
-          </nav>
-        </aside>
-
-        <main className="flex-1">
-          {children}
-        </main>
-      </div>
+          ))}
+        </nav>
+      </aside>
+      <main className="flex-1 px-6 py-8 md:px-10">{children}</main>
     </div>
   );
 }

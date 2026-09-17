@@ -1,108 +1,133 @@
-// src/components/admin/EquipmentListingsQueue.tsx
-
 'use client';
 
-import { Badge } from '@/components/ui/Badge';
-import { Button } from '@/components/ui/Button';
-import Link from 'next/link';
+import { useState, useTransition } from 'react';
+import { reviewListing } from '@/app/admin/listings/actions';
 
 interface Listing {
   id: string;
-  equipment_type: string;
-  make: string | null;
-  model: string | null;
+  make: string;
+  model: string;
   year: string | null;
-  location: string;
+  equipment_type: string;
+  asking_price: number | null;
   status: string;
+  location: string | null;
   created_at: string;
-  profiles?: {
-    email: string;
-    company_name: string | null;
-  };
 }
 
-interface EquipmentListingsQueueProps {
-  listings: Listing[];
-  onApprove?: (id: string) => void;
-  onReject?: (id: string) => void;
-}
+const STATUS_STYLES: Record<string, string> = {
+  pending: 'bg-amber-500/15 text-amber-400 border-amber-500/30',
+  active: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30',
+  rejected: 'bg-red-500/15 text-red-400 border-red-500/30',
+  sold: 'bg-slate-500/15 text-slate-400 border-slate-500/30',
+};
 
-export function EquipmentListingsQueue({
-  listings,
-  onApprove,
-  onReject,
-}: EquipmentListingsQueueProps) {
-  if (listings.length === 0) {
-    return (
-      <div className="text-center py-12 border border-[var(--line)] rounded-sm" style={{ backgroundColor: 'var(--off-white)' }}>
-        <p className="text-sm" style={{ color: 'var(--slate)' }}>
-          No pending listings.
-        </p>
-      </div>
-    );
+export function EquipmentListingsQueue({ listings }: { listings: Listing[] }) {
+  const [items, setItems] = useState(listings);
+  const [isPending, startTransition] = useTransition();
+  const [pendingId, setPendingId] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  function handleReview(id: string, action: 'approve' | 'reject') {
+    setError(null);
+    setPendingId(id);
+    startTransition(async () => {
+      try {
+        const { status } = await reviewListing(id, action);
+        setItems((prev) =>
+          prev.map((item) => (item.id === id ? { ...item, status } : item))
+        );
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Something went wrong.');
+      } finally {
+        setPendingId(null);
+      }
+    });
   }
 
   return (
-    <div className="space-y-4">
-      {listings.map((listing) => (
-        <div
-          key={listing.id}
-          className="p-6 rounded-sm border border-[var(--line)]"
-          style={{ backgroundColor: 'var(--off-white)' }}
-        >
-          <div className="flex items-start justify-between mb-4">
-            <div>
-              <h3 className="font-bold mb-1" style={{ color: 'var(--navy)' }}>
-                {listing.year && `${listing.year} `}
-                {listing.make} {listing.model}
-              </h3>
-              <p className="text-sm mb-1" style={{ color: 'var(--slate)' }}>
-                {listing.equipment_type} • {listing.location}
-              </p>
-              <p className="text-xs" style={{ color: 'var(--steel-light)' }}>
-                Submitted by: {listing.profiles?.email || 'N/A'}
-                {listing.profiles?.company_name && ` (${listing.profiles.company_name})`}
-              </p>
-              <p className="text-xs mt-1" style={{ color: 'var(--steel-light)' }}>
-                Submitted: {new Date(listing.created_at).toLocaleDateString()}
-              </p>
-            </div>
-            <div className="flex items-center gap-3">
-              <Badge
-                variant={
-                  listing.status === 'active' ? 'success' :
-                  listing.status === 'pending' ? 'warning' :
-                  listing.status === 'rejected' ? 'error' : 'default'
-                }
-              >
-                {listing.status}
-              </Badge>
-              <Link
-                href={`/listings/${listing.id}`}
-                className="text-sm font-semibold text-[var(--orange)] hover:underline"
-              >
-                View →
-              </Link>
-            </div>
-          </div>
-
-          {listing.status === 'pending' && (
-            <div className="pt-4 border-t border-[var(--line)] flex gap-3">
-              {/* ✅ FIXED: Removed size prop since it's not in ButtonProps */}
-              {onApprove && (
-                <Button onClick={() => onApprove(listing.id)}>
-                  Approve
-                </Button>
-              )}
-              {onReject && (
-                <Button onClick={() => onReject(listing.id)} variant="outline">
-                  Reject
-                </Button>
-              )}
-            </div>
-          )}
+    <div
+      className="rounded-lg border overflow-x-auto"
+      style={{ borderColor: 'var(--admin-border)', backgroundColor: 'var(--admin-surface)' }}
+    >
+      {error && (
+        <div className="px-5 py-3 text-sm text-red-400 border-b" style={{ borderColor: 'var(--admin-border)' }}>
+          {error}
         </div>
-      ))}
+      )}
+      <table className="w-full text-sm">
+        <thead>
+          <tr className="text-left" style={{ color: 'var(--admin-text-muted)' }}>
+            <th className="px-5 py-3 font-medium">Equipment</th>
+            <th className="px-5 py-3 font-medium">Asking price</th>
+            <th className="px-5 py-3 font-medium">Location</th>
+            <th className="px-5 py-3 font-medium">Status</th>
+            <th className="px-5 py-3 font-medium">Submitted</th>
+            <th className="px-5 py-3 font-medium text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {items.map((item) => {
+            const busy = isPending && pendingId === item.id;
+            return (
+              <tr key={item.id} className="border-t" style={{ borderColor: 'var(--admin-border)', color: 'var(--admin-text)' }}>
+                <td className="px-5 py-4">
+                  <div className="font-semibold">
+                    {item.year ? `${item.year} ` : ''}
+                    {item.make} {item.model}
+                  </div>
+                  <div style={{ color: 'var(--admin-text-muted)' }} className="text-xs">
+                    {item.equipment_type}
+                  </div>
+                </td>
+                <td className="px-5 py-4">
+                  {item.asking_price ? `$${item.asking_price.toLocaleString()}` : '—'}
+                </td>
+                <td className="px-5 py-4">{item.location ?? '—'}</td>
+                <td className="px-5 py-4">
+                  <span
+                    className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium capitalize ${STATUS_STYLES[item.status] ?? ''}`}
+                  >
+                    {item.status}
+                  </span>
+                </td>
+                <td className="px-5 py-4" style={{ color: 'var(--admin-text-muted)' }}>
+                  {new Date(item.created_at).toLocaleDateString()}
+                </td>
+                <td className="px-5 py-4">
+                  {item.status === 'pending' && (
+                    <div className="flex justify-end gap-2 whitespace-nowrap">
+                      <button
+                        disabled={busy}
+                        onClick={() => handleReview(item.id, 'approve')}
+                        className="rounded-md px-3 py-1.5 text-xs font-semibold text-black disabled:opacity-50"
+                        style={{ backgroundColor: 'var(--admin-accent)' }}
+                      >
+                        Approve & publish
+                      </button>
+                      <button
+                        disabled={busy}
+                        onClick={() => handleReview(item.id, 'reject')}
+                        className="rounded-md border px-3 py-1.5 text-xs font-semibold disabled:opacity-50"
+                        style={{ borderColor: 'var(--admin-border)', color: 'var(--admin-text)' }}
+                      >
+                        Reject
+                      </button>
+                    </div>
+                  )}
+                </td>
+              </tr>
+            );
+          })}
+          {items.length === 0 && (
+            <tr>
+              <td colSpan={6} className="px-5 py-10 text-center" style={{ color: 'var(--admin-text-muted)' }}>
+                No listings to review.
+              </td>
+            </tr>
+          )}
+        </tbody>
+      </table>
     </div>
   );
 }
