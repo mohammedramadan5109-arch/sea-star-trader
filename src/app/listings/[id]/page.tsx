@@ -2,8 +2,8 @@
 
 import { notFound } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
-import Image from 'next/image';
 import Link from 'next/link';
+import { ImageGallery } from '@/components/listings/ImageGallery';
 
 export default async function ListingDetailPage({
   params,
@@ -55,40 +55,12 @@ export default async function ListingDetailPage({
       </Link>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-        {/* Image Gallery */}
+        {/* Image Gallery — now using the actual working component */}
         <div>
-          {listing.photos && listing.photos.length > 0 ? (
-            <div className="space-y-4">
-              <div className="relative h-96 w-full rounded-sm overflow-hidden border border-[var(--line)]">
-                <Image
-                  src={listing.photos[0]}
-                  alt={`${listing.make} ${listing.model}`}
-                  fill
-                  className="object-cover"
-                />
-              </div>
-              {listing.photos.length > 1 && (
-                <div className="grid grid-cols-4 gap-2">
-                  {/* ✅ FIXED: Added type annotations */}
-                  {listing.photos.slice(1, 5).map((photo: string, index: number) => (
-                    <div
-                      key={index}
-                      className="relative h-24 rounded-sm overflow-hidden border border-[var(--line)]"
-                    >
-                      <Image src={photo} alt={`Photo ${index + 2}`} fill className="object-cover" />
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          ) : (
-            <div
-              className="h-96 flex items-center justify-center rounded-sm border border-[var(--line)]"
-              style={{ backgroundColor: 'var(--off-white)' }}
-            >
-              <span style={{ color: 'var(--slate)' }}>No images available</span>
-            </div>
-          )}
+          <ImageGallery
+            images={listing.photos ?? []}
+            alt={`${listing.make} ${listing.model}`}
+          />
         </div>
 
         {/* Details */}
@@ -134,7 +106,7 @@ export default async function ListingDetailPage({
               <h3 className="text-lg font-bold mb-2" style={{ color: 'var(--navy)' }}>
                 Description
               </h3>
-              <p className="text-sm leading-relaxed" style={{ color: 'var(--slate)' }}>
+              <p className="text-sm leading-relaxed whitespace-pre-line" style={{ color: 'var(--slate)' }}>
                 {listing.description}
               </p>
             </div>
