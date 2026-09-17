@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server';
 import Link from 'next/link';
 import { ImageGallery } from '@/components/listings/ImageGallery';
 import { ListingActions } from '@/components/listings/ListingActions';
+import { CONTACT_PHONE_DISPLAY } from '@/lib/constants/contact';
 
 export default async function ListingDetailPage({
   params,
@@ -45,11 +46,10 @@ export default async function ListingDetailPage({
     initialSaved = !!savedRow;
   }
 
-  // Get seller info
+  // Seller company name is still shown for reference — contact always
+  // goes through the fixed site email/WhatsApp, not the seller's own info.
   const seller = listing.profiles as any;
-  const sellerEmail = seller?.email || 'info@seastartrader.com';
   const sellerCompany = seller?.company_name || 'SeaStarTrader Seller';
-  const sellerPhone = seller?.phone;
 
   // Create email subject and body
   const emailSubject = encodeURIComponent(
@@ -57,6 +57,9 @@ export default async function ListingDetailPage({
   );
   const emailBody = encodeURIComponent(
     `Hi,\n\nI'm interested in your ${listing.equipment_type} listed on SeaStarTrader:\n\n${listing.year ? listing.year + ' ' : ''}${listing.make} ${listing.model}\nLocation: ${listing.location}\n${listing.asking_price ? 'Price: $' + listing.asking_price.toLocaleString() : ''}\n\nPlease let me know if this is still available.\n\nThank you!`
+  );
+  const whatsappMessage = encodeURIComponent(
+    `Hi, I'm interested in the ${listing.year ? listing.year + ' ' : ''}${listing.make} ${listing.model} listed on SeaStarTrader. Is it still available?`
   );
 
   return (
@@ -133,28 +136,20 @@ export default async function ListingDetailPage({
               Seller Information
             </h3>
             <div className="space-y-1 text-sm">
-              {sellerCompany && (
-                <div style={{ color: 'var(--slate)' }}>
-                  <span className="font-semibold">Company:</span> {sellerCompany}
-                </div>
-              )}
-              {sellerPhone && (
-                <div style={{ color: 'var(--slate)' }}>
-                  <span className="font-semibold">Phone:</span>{' '}
-                  <a href={`tel:${sellerPhone}`} className="text-[var(--orange)] hover:underline">
-                    {sellerPhone}
-                  </a>
-                </div>
-              )}
+              <div style={{ color: 'var(--slate)' }}>
+                <span className="font-semibold">Company:</span> {sellerCompany}
+              </div>
+              <div style={{ color: 'var(--slate)' }}>
+                <span className="font-semibold">Contact:</span> {CONTACT_PHONE_DISPLAY}
+              </div>
             </div>
           </div>
 
           <ListingActions
             listingId={id}
-            sellerEmail={sellerEmail}
-            sellerPhone={sellerPhone}
             emailSubject={emailSubject}
             emailBody={emailBody}
+            whatsappMessage={whatsappMessage}
             isLoggedIn={!!currentUser}
             initialSaved={initialSaved}
           />
