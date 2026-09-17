@@ -11,7 +11,8 @@ export const sellEquipmentSchema = z.object({
   location: z.string().min(1, 'Location is required'),
   description: z.string().optional(),
   asking_price: z.number().positive('Price must be positive').optional(),
-  hours: z.number().positive().optional(),
+  hours: z.number().nonnegative('Hours cannot be negative').optional(),
+  serial_number: z.string().optional(),
   mileage: z.number().positive().optional(),
   photos: z.array(z.string()).min(1, 'At least one photo is required').max(10, 'Maximum 10 photos'),
 });

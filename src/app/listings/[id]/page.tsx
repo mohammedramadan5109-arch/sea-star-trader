@@ -1,9 +1,8 @@
-// src/app/listings/[id]/page.tsx
-
 import { notFound } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import Link from 'next/link';
 import { ImageGallery } from '@/components/listings/ImageGallery';
+import { ListingActions } from '@/components/listings/ListingActions';
 
 export default async function ListingDetailPage({
   params,
@@ -28,6 +27,22 @@ export default async function ListingDetailPage({
 
   if (error || !listing) {
     notFound();
+  }
+
+  // Check if the current user has this listing saved
+  const {
+    data: { user: currentUser },
+  } = await supabase.auth.getUser();
+
+  let initialSaved = false;
+  if (currentUser) {
+    const { data: savedRow } = await supabase
+      .from('saved_listings')
+      .select('id')
+      .eq('user_id', currentUser.id)
+      .eq('listing_id', id)
+      .maybeSingle();
+    initialSaved = !!savedRow;
   }
 
   // Get seller info
@@ -134,30 +149,15 @@ export default async function ListingDetailPage({
             </div>
           </div>
 
-          <div className="flex gap-4">
-            <a
-              href={`mailto:${sellerEmail}?subject=${emailSubject}&body=${emailBody}`}
-              className="flex-1 px-6 py-3 text-center text-sm font-semibold rounded-sm"
-              style={{ backgroundColor: 'var(--orange)', color: 'var(--paper)' }}
-            >
-              Contact Seller
-            </a>
-            {sellerPhone && (
-              <a
-                href={`tel:${sellerPhone}`}
-                className="px-6 py-3 text-sm font-semibold rounded-sm border"
-                style={{ borderColor: 'var(--line)', color: 'var(--navy)' }}
-              >
-                Call Seller
-              </a>
-            )}
-            <button
-              className="px-6 py-3 text-sm font-semibold rounded-sm border"
-              style={{ borderColor: 'var(--line)', color: 'var(--navy)' }}
-            >
-              Save
-            </button>
-          </div>
+          <ListingActions
+            listingId={id}
+            sellerEmail={sellerEmail}
+            sellerPhone={sellerPhone}
+            emailSubject={emailSubject}
+            emailBody={emailBody}
+            isLoggedIn={!!currentUser}
+            initialSaved={initialSaved}
+          />
         </div>
       </div>
     </div>
