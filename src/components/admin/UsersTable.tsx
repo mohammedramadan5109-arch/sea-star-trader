@@ -1,71 +1,105 @@
-import { Badge } from '@/components/ui/Badge';
+'use client';
 
-interface User {
+import { useState, useTransition } from 'react';
+import { BadgeCheck } from 'lucide-react';
+import { setSellerVerified } from '@/app/admin/listings/[id]/edit/actions';
+
+interface UserRow {
   id: string;
-  email: string;
+  email: string | null;
   company_name: string | null;
   phone: string | null;
-  role: string;
+  role: string | null;
+  is_verified: boolean;
   created_at: string;
 }
 
-interface UsersTableProps {
-  users: User[];
-}
+export function UsersTable({ users }: { users: UserRow[] }) {
+  const [rows, setRows] = useState(users);
+  const [isPending, startTransition] = useTransition();
+  const [pendingId, setPendingId] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
-export function UsersTable({ users }: UsersTableProps) {
+  function handleToggleVerified(id: string, next: boolean) {
+    setError(null);
+    setPendingId(id);
+    startTransition(async () => {
+      try {
+        await setSellerVerified(id, next);
+        setRows((prev) => prev.map((r) => (r.id === id ? { ...r, is_verified: next } : r)));
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Something went wrong.');
+      } finally {
+        setPendingId(null);
+      }
+    });
+  }
+
   return (
-    <div className="border border-[var(--line)] rounded-sm overflow-hidden">
-      <table className="w-full">
-        <thead style={{ backgroundColor: 'var(--off-white)' }}>
-          <tr>
-            <th className="px-6 py-3 text-left text-xs font-bold uppercase" style={{ color: 'var(--navy)' }}>
-              Email
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-bold uppercase" style={{ color: 'var(--navy)' }}>
-              Company
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-bold uppercase" style={{ color: 'var(--navy)' }}>
-              Phone
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-bold uppercase" style={{ color: 'var(--navy)' }}>
-              Role
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-bold uppercase" style={{ color: 'var(--navy)' }}>
-              Joined
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-bold uppercase" style={{ color: 'var(--navy)' }}>
-              Actions
-            </th>
+    <div
+      className="rounded-lg border overflow-x-auto"
+      style={{ borderColor: 'var(--admin-border)', backgroundColor: 'var(--admin-surface)' }}
+    >
+      {error && (
+        <div className="px-5 py-3 text-sm text-red-400 border-b" style={{ borderColor: 'var(--admin-border)' }}>
+          {error}
+        </div>
+      )}
+      <table className="w-full text-sm">
+        <thead>
+          <tr className="text-left" style={{ color: 'var(--admin-text-muted)' }}>
+            <th className="px-5 py-3 font-medium">User</th>
+            <th className="px-5 py-3 font-medium">Company</th>
+            <th className="px-5 py-3 font-medium">Phone</th>
+            <th className="px-5 py-3 font-medium">Role</th>
+            <th className="px-5 py-3 font-medium">Verified</th>
+            <th className="px-5 py-3 font-medium text-right">Actions</th>
           </tr>
         </thead>
-        <tbody style={{ backgroundColor: 'var(--paper)' }}>
-          {users.map((user) => (
-            <tr key={user.id} className="border-t" style={{ borderColor: 'var(--line)' }}>
-              <td className="px-6 py-4 text-sm" style={{ color: 'var(--navy)' }}>
-                {user.email}
-              </td>
-              <td className="px-6 py-4 text-sm" style={{ color: 'var(--slate)' }}>
-                {user.company_name || '—'}
-              </td>
-              <td className="px-6 py-4 text-sm" style={{ color: 'var(--slate)' }}>
-                {user.phone || '—'}
-              </td>
-              <td className="px-6 py-4 text-sm">
-                <Badge variant={user.role === 'admin' ? 'default' : 'success'}>
-                  {user.role}
-                </Badge>
-              </td>
-              <td className="px-6 py-4 text-sm" style={{ color: 'var(--slate)' }}>
-                {new Date(user.created_at).toLocaleDateString()}
-              </td>
-              <td className="px-6 py-4 text-sm">
-                <button className="text-[var(--orange)] font-semibold hover:underline">
-                  View
-                </button>
+        <tbody>
+          {rows.map((user) => {
+            const busy = isPending && pendingId === user.id;
+            return (
+              <tr
+                key={user.id}
+                className="border-t"
+                style={{ borderColor: 'var(--admin-border)', color: 'var(--admin-text)' }}
+              >
+                <td className="px-5 py-4">{user.email ?? '—'}</td>
+                <td className="px-5 py-4">{user.company_name ?? '—'}</td>
+                <td className="px-5 py-4">{user.phone ?? '—'}</td>
+                <td className="px-5 py-4 capitalize">{user.role ?? 'user'}</td>
+                <td className="px-5 py-4">
+                  {user.is_verified ? (
+                    <span className="inline-flex items-center gap-1 text-xs font-medium" style={{ color: '#3FCF8E' }}>
+                      <BadgeCheck size={14} /> Verified
+                    </span>
+                  ) : (
+                    <span className="text-xs" style={{ color: 'var(--admin-text-muted)' }}>
+                      Not verified
+                    </span>
+                  )}
+                </td>
+                <td className="px-5 py-4 text-right">
+                  <button
+                    disabled={busy}
+                    onClick={() => handleToggleVerified(user.id, !user.is_verified)}
+                    className="rounded-md border px-3 py-1.5 text-xs font-semibold disabled:opacity-50"
+                    style={{ borderColor: 'var(--admin-border)', color: 'var(--admin-text)' }}
+                  >
+                    {user.is_verified ? 'Remove verification' : 'Mark verified'}
+                  </button>
+                </td>
+              </tr>
+            );
+          })}
+          {rows.length === 0 && (
+            <tr>
+              <td colSpan={6} className="px-5 py-10 text-center" style={{ color: 'var(--admin-text-muted)' }}>
+                No users found.
               </td>
             </tr>
-          ))}
+          )}
         </tbody>
       </table>
     </div>

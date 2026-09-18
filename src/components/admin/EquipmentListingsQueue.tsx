@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useTransition } from 'react';
+import Link from 'next/link';
 import { reviewListing } from '@/app/admin/listings/actions';
 
 interface Listing {
@@ -95,8 +96,16 @@ export function EquipmentListingsQueue({ listings }: { listings: Listing[] }) {
                   {new Date(item.created_at).toLocaleDateString()}
                 </td>
                 <td className="px-5 py-4">
-                  {item.status === 'pending' && (
-                    <div className="flex justify-end gap-2 whitespace-nowrap">
+                  <div className="flex justify-end items-center gap-2 whitespace-nowrap">
+                    <Link
+                      href={`/admin/listings/${item.id}/edit`}
+                      className="rounded-md border px-3 py-1.5 text-xs font-semibold"
+                      style={{ borderColor: 'var(--admin-border)', color: 'var(--admin-text)' }}
+                    >
+                      Edit
+                    </Link>
+                    {item.status === 'pending' && (
+                      <>
                       <button
                         disabled={busy}
                         onClick={() => handleReview(item.id, 'approve')}
@@ -113,8 +122,9 @@ export function EquipmentListingsQueue({ listings }: { listings: Listing[] }) {
                       >
                         Reject
                       </button>
-                    </div>
-                  )}
+                      </>
+                    )}
+                  </div>
                 </td>
               </tr>
             );

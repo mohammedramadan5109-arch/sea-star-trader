@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
-import { ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, X, Images } from 'lucide-react';
 
 interface ImageGalleryProps {
   images: string[];
@@ -13,28 +13,18 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
 
-  const goToPrevious = () => {
-    setCurrentIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
-  };
+  const goToPrevious = () => setCurrentIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+  const goToNext = () => setCurrentIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
 
-  const goToNext = () => {
-    setCurrentIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
-  };
-
-  // Close on Escape, navigate with arrow keys while lightbox is open
   useEffect(() => {
     if (!isLightboxOpen) return;
-
     function handleKeyDown(e: KeyboardEvent) {
       if (e.key === 'Escape') setIsLightboxOpen(false);
       if (e.key === 'ArrowLeft') goToPrevious();
       if (e.key === 'ArrowRight') goToNext();
     }
-
     window.addEventListener('keydown', handleKeyDown);
-    // Prevent background scroll while the lightbox is open
     document.body.style.overflow = 'hidden';
-
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
       document.body.style.overflow = '';
@@ -45,44 +35,44 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
   if (!images || images.length === 0) {
     return (
       <div
-        className="h-96 flex items-center justify-center rounded-sm border border-[var(--line)]"
-        style={{ backgroundColor: 'var(--off-white)' }}
+        className="h-96 flex items-center justify-center rounded-lg border"
+        style={{ backgroundColor: 'var(--listing-surface)', borderColor: 'var(--listing-border)' }}
       >
-        <span style={{ color: 'var(--slate)' }}>No images available</span>
+        <span style={{ color: 'var(--listing-text-muted)' }}>No images available</span>
       </div>
     );
   }
 
+  const visibleThumbs = images.slice(0, 5);
+  const extraCount = images.length - 5;
+
   return (
-    <div className="space-y-4">
-      {/* Main Image */}
-      <div className="relative h-96 w-full rounded-sm overflow-hidden border border-[var(--line)] group">
+    <div className="space-y-3">
+      <div
+        className="relative h-96 w-full rounded-lg overflow-hidden border group"
+        style={{ borderColor: 'var(--listing-border)' }}
+      >
         <button
           type="button"
           onClick={() => setIsLightboxOpen(true)}
           className="absolute inset-0 w-full h-full cursor-zoom-in"
           aria-label="Open full-size image"
         >
-          <Image
-            src={images[currentIndex]}
-            alt={`${alt} - Image ${currentIndex + 1}`}
-            fill
-            className="object-cover"
-          />
+          <Image src={images[currentIndex]} alt={`${alt} - Image ${currentIndex + 1}`} fill className="object-cover" />
         </button>
 
         {images.length > 1 && (
           <>
             <button
               onClick={goToPrevious}
-              className="absolute left-2 top-1/2 -translate-y-1/2 p-2 bg-black/50 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+              className="absolute left-2 top-1/2 -translate-y-1/2 p-2 bg-black/60 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
               aria-label="Previous image"
             >
               <ChevronLeft size={24} />
             </button>
             <button
               onClick={goToNext}
-              className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-black/50 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+              className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-black/60 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
               aria-label="Next image"
             >
               <ChevronRight size={24} />
@@ -90,42 +80,41 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
           </>
         )}
 
-        {images.length > 1 && (
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
-            {images.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => setCurrentIndex(index)}
-                className={`w-2 h-2 rounded-full transition-colors ${
-                  index === currentIndex ? 'bg-white' : 'bg-white/50'
-                }`}
-                aria-label={`Go to image ${index + 1}`}
-              />
-            ))}
-          </div>
-        )}
+        <button
+          onClick={() => setIsLightboxOpen(true)}
+          className="absolute bottom-3 right-3 flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-black/70 text-white text-xs font-medium"
+        >
+          <Images size={14} />
+          View all photos ({images.length})
+        </button>
       </div>
 
-      {/* Thumbnails */}
       {images.length > 1 && (
         <div className="grid grid-cols-5 gap-2">
-          {images.slice(0, 5).map((image, index) => (
-            <button
-              key={index}
-              onClick={() => setCurrentIndex(index)}
-              className={`relative h-20 rounded-sm overflow-hidden border-2 transition-all ${
-                index === currentIndex
-                  ? 'border-[var(--orange)]'
-                  : 'border-[var(--line)] opacity-60 hover:opacity-100'
-              }`}
-            >
-              <Image src={image} alt={`Thumbnail ${index + 1}`} fill className="object-cover" />
-            </button>
-          ))}
+          {visibleThumbs.map((image, index) => {
+            const isLastVisible = index === 4 && extraCount > 0;
+            return (
+              <button
+                key={index}
+                onClick={() => (isLastVisible ? setIsLightboxOpen(true) : setCurrentIndex(index))}
+                className={`relative h-16 rounded-md overflow-hidden border-2 transition-all ${
+                  index === currentIndex && !isLastVisible
+                    ? 'border-[var(--listing-accent)]'
+                    : 'border-transparent opacity-70 hover:opacity-100'
+                }`}
+              >
+                <Image src={image} alt={`Thumbnail ${index + 1}`} fill className="object-cover" />
+                {isLastVisible && (
+                  <div className="absolute inset-0 bg-black/60 flex items-center justify-center text-white text-xs font-semibold">
+                    +{extraCount}
+                  </div>
+                )}
+              </button>
+            );
+          })}
         </div>
       )}
 
-      {/* Fullscreen Lightbox */}
       {isLightboxOpen && (
         <div
           className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center"
@@ -152,10 +141,7 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
             </button>
           )}
 
-          <div
-            className="relative w-[90vw] h-[85vh]"
-            onClick={(e) => e.stopPropagation()}
-          >
+          <div className="relative w-[90vw] h-[85vh]" onClick={(e) => e.stopPropagation()}>
             <Image
               src={images[currentIndex]}
               alt={`${alt} - Image ${currentIndex + 1}`}

@@ -32,6 +32,20 @@ const sellEquipmentSchema = z.object({
   location: z.string().min(1, 'Location is required'),
   description: z.string().optional(),
   asking_price: z.string().optional(),
+  
+  // Technical Specifications
+  serial_number: z.string().optional(),
+  engine_model: z.string().optional(),
+  engine_power: z.string().optional(),
+  transmission: z.string().optional(),
+  bucket_capacity: z.string().optional(),
+  tire_size: z.string().optional(),
+  net_weight: z.string().optional(),
+  fuel_type: z.string().optional(),
+  hours: z.string().optional(),
+  
+  // Features (one per line)
+  features_text: z.string().optional(),
 });
 
 type SellEquipmentFormData = z.infer<typeof sellEquipmentSchema>;
@@ -76,6 +90,15 @@ export default function SellPage() {
       }
 
       const askingPrice = data.asking_price ? parseFloat(data.asking_price) : null;
+      const hours = data.hours ? parseInt(data.hours) : null;
+
+      // Parse features from textarea (one per line)
+      const features = data.features_text 
+        ? data.features_text.split('\n').filter(f => f.trim()).map(f => f.trim())
+        : [];
+
+      // Generate listing ID display
+      const listingIdDisplay = `SST-${data.year}-${data.make.substring(0,3).toUpperCase()}-${Math.random().toString(36).substring(2,6).toUpperCase()}`;
 
       const insertData = {
         user_id: user.id,
@@ -91,6 +114,20 @@ export default function SellPage() {
         asking_price: askingPrice,
         photos: photos,
         status: 'pending',
+        hours: hours,
+        // New technical specifications
+        serial_number: data.serial_number || null,
+        engine_model: data.engine_model || null,
+        engine_power: data.engine_power || null,
+        transmission: data.transmission || null,
+        bucket_capacity: data.bucket_capacity || null,
+        tire_size: data.tire_size || null,
+        net_weight: data.net_weight || null,
+        fuel_type: data.fuel_type || null,
+        features: features,
+        listing_id_display: listingIdDisplay,
+        inspection_score: Math.floor(Math.random() * 20) + 80, // Random 80-100 for now
+        stock_status: 'in_stock',
       };
 
       console.log('Inserting data:', insertData);
@@ -135,6 +172,7 @@ export default function SellPage() {
       </p>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+        {/* Equipment Details */}
         <FormSection
           title="Equipment Details"
           description="Tell us about the equipment you are selling"
@@ -212,6 +250,15 @@ export default function SellPage() {
             </FormField>
           </div>
 
+          <FormField label="Operating Hours" error={errors.hours?.message}>
+            <Input
+              {...register('hours')}
+              type="number"
+              placeholder="e.g. 8763"
+              error={errors.hours?.message}
+            />
+          </FormField>
+
           <FormField label="Description" error={errors.description?.message}>
             <Textarea
               {...register('description')}
@@ -222,6 +269,94 @@ export default function SellPage() {
           </FormField>
         </FormSection>
 
+        {/* Technical Specifications */}
+        <FormSection
+          title="Technical Specifications"
+          description="Detailed specifications help buyers make informed decisions"
+        >
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <FormField label="Serial Number" error={errors.serial_number?.message}>
+              <Input
+                {...register('serial_number')}
+                placeholder="e.g. CAT0980HJJG123456"
+                error={errors.serial_number?.message}
+              />
+            </FormField>
+
+            <FormField label="Net Weight" error={errors.net_weight?.message}>
+              <Input
+                {...register('net_weight')}
+                placeholder="e.g. 64,826 lbs"
+                error={errors.net_weight?.message}
+              />
+            </FormField>
+
+            <FormField label="Engine Model" error={errors.engine_model?.message}>
+              <Input
+                {...register('engine_model')}
+                placeholder="e.g. Cat C13 ACERT"
+                error={errors.engine_model?.message}
+              />
+            </FormField>
+
+            <FormField label="Engine Power" error={errors.engine_power?.message}>
+              <Input
+                {...register('engine_power')}
+                placeholder="e.g. 362 hp"
+                error={errors.engine_power?.message}
+              />
+            </FormField>
+
+            <FormField label="Fuel Type" error={errors.fuel_type?.message}>
+              <Select {...register('fuel_type')} error={errors.fuel_type?.message}>
+                <option value="">Select fuel type</option>
+                <option value="Diesel">Diesel</option>
+                <option value="Gasoline">Gasoline</option>
+                <option value="Electric">Electric</option>
+                <option value="Hybrid">Hybrid</option>
+              </Select>
+            </FormField>
+
+            <FormField label="Transmission" error={errors.transmission?.message}>
+              <Input
+                {...register('transmission')}
+                placeholder="e.g. Powershift"
+                error={errors.transmission?.message}
+              />
+            </FormField>
+
+            <FormField label="Bucket Capacity" error={errors.bucket_capacity?.message}>
+              <Input
+                {...register('bucket_capacity')}
+                placeholder="e.g. 4.5 yd³"
+                error={errors.bucket_capacity?.message}
+              />
+            </FormField>
+
+            <FormField label="Tire Size" error={errors.tire_size?.message}>
+              <Input
+                {...register('tire_size')}
+                placeholder="e.g. 29.5R25"
+                error={errors.tire_size?.message}
+              />
+            </FormField>
+          </div>
+        </FormSection>
+
+        {/* Key Features */}
+        <FormSection
+          title="Key Features"
+          description="List important features (one per line)"
+        >
+          <Textarea
+            {...register('features_text')}
+            placeholder="Enclosed ROPS cab with A/C&#10;Ride control&#10;Auto Lube System&#10;Good operating condition&#10;Regularly serviced"
+            rows={6}
+            error={errors.features_text?.message}
+          />
+        </FormSection>
+
+        {/* Location & Pricing */}
         <FormSection
           title="Location & Pricing"
           description="Where is the equipment located and what is your asking price?"
@@ -244,7 +379,7 @@ export default function SellPage() {
           </FormField>
         </FormSection>
 
-        {/* UPDATED: Bulk Photo Upload Section */}
+        {/* Equipment Photos */}
         <FormSection
           title="Equipment Photos"
           description="Upload 70-100 high-quality photos of your equipment from all angles"
@@ -256,13 +391,13 @@ export default function SellPage() {
           
           {photos.length === 0 && (
             <p className="text-sm font-semibold" style={{ color: 'var(--orange)' }}>
-              ⚠️ At least one photo is required
+              ️ At least one photo is required
             </p>
           )}
           
           {photos.length > 0 && photos.length < 70 && (
             <p className="text-sm" style={{ color: 'var(--slate)' }}>
-              📸 {photos.length} photos uploaded. Consider uploading 70-100 photos for best results.
+               {photos.length} photos uploaded. Consider uploading 70-100 photos for best results.
             </p>
           )}
           
@@ -273,6 +408,7 @@ export default function SellPage() {
           )}
         </FormSection>
 
+        {/* Submit Buttons */}
         <div className="flex gap-4">
           <Button 
             type="submit" 
