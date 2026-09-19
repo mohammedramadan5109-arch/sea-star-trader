@@ -14,7 +14,10 @@ interface NavLinkProps {
 
 export function NavLink({ href, label, hasDropdown, isActive, onClick }: NavLinkProps) {
   const baseStyles = 'flex items-center gap-1 text-base font-semibold focus:outline-none transition-colors';
-  const colorStyles = isActive ? 'text-[var(--orange)]' : 'text-[var(--paper)]';
+  // Was text-[var(--paper)] — after the global theme flip that resolves to
+  // dark navy, which is invisible against the now-dark nav bar. Pinned to
+  // white so it stays readable regardless of how --paper is themed elsewhere.
+  const colorStyles = isActive ? 'text-[var(--orange)]' : 'text-white';
 
   const content = (
     <>

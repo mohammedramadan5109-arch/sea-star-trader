@@ -41,7 +41,7 @@ export function Header() {
           </Link>
           <Link
             href="/register"
-            className="px-5 py-2 text-sm font-semibold rounded-sm"
+            className="px-5 py-2 text-sm font-semibold rounded-lg"
             style={{ backgroundColor: 'var(--orange)', color: 'var(--paper)' }}
           >
             Create Account
@@ -49,8 +49,10 @@ export function Header() {
         </div>
       </div>
 
-      {/* Row 2: Nav */}
-      <nav style={{ backgroundColor: 'var(--slate)' }} className="relative">
+      {/* Row 2: Nav — pinned to dark navy, matching the repainted mockup.
+          Previously used var(--slate), which the global theme flip turned
+          into a light color, producing the pale bar. */}
+      <nav style={{ backgroundColor: '#0F1E2D', borderTop: '1px solid #1C3040' }} className="relative">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center gap-10">
           <div className="relative">
             <NavLink

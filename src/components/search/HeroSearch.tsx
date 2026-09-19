@@ -7,10 +7,13 @@ export function HeroSearch() {
     <form
       action="/listings"
       method="GET"
-      className="flex flex-col md:flex-row rounded-sm overflow-hidden max-w-3xl mb-4"
+      className="flex flex-col md:flex-row rounded-lg overflow-hidden max-w-3xl mb-4"
       style={{ backgroundColor: 'var(--paper)' }}
     >
-      <label className="flex-1 px-4 py-3 md:border-r" style={{ borderColor: 'var(--line)' }}>
+      <label
+        className="flex-1 px-4 py-3 border-b md:border-b-0 md:border-r"
+        style={{ borderColor: 'var(--line)' }}
+      >
         <span
           className="block text-xs font-semibold uppercase tracking-wide mb-1"
           style={{ color: 'var(--slate)' }}
@@ -30,7 +33,10 @@ export function HeroSearch() {
         </select>
       </label>
 
-      <label className="flex-1 px-4 py-3 md:border-r" style={{ borderColor: 'var(--line)' }}>
+      <label
+        className="flex-1 px-4 py-3 border-b md:border-b-0 md:border-r"
+        style={{ borderColor: 'var(--line)' }}
+      >
         <span
           className="block text-xs font-semibold uppercase tracking-wide mb-1"
           style={{ color: 'var(--slate)' }}
@@ -51,7 +57,7 @@ export function HeroSearch() {
         </select>
       </label>
 
-      <label className="flex-1 px-4 py-3">
+      <label className="flex-1 px-4 py-3 border-b md:border-b-0">
         <span
           className="block text-xs font-semibold uppercase tracking-wide mb-1"
           style={{ color: 'var(--slate)' }}
@@ -69,7 +75,7 @@ export function HeroSearch() {
 
       <button
         type="submit"
-        className="px-8 font-semibold text-sm"
+        className="px-8 py-3 md:py-0 font-semibold text-sm"
         style={{ backgroundColor: 'var(--orange)', color: 'var(--paper)' }}
       >
         Search

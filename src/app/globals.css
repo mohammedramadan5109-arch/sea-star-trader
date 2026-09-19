@@ -4,14 +4,16 @@
 @import "tailwindcss";
 
 :root {
-  --navy: #0E2233;
-  --slate: #3A5569;
-  --steel-light: #6B7F92;
-  --orange: #E4572E;
-  --paper: #FDFCFA;
-  --off-white: #F5F4F0;
-  --ink: #1A1A1A;
-  --line: #D1CFC7;
+  --navy: #E8EDF2;       /* was dark heading text on light bg -> light heading text on dark bg */
+  --navy-solid: #0E2233; /* literal dark navy, independent of the flipped --navy above */
+  --slate: #8FA3B5;      /* secondary/muted text */
+  --steel-light: #3A5569; /* mid-tone for subtle hovers/dividers */
+  --orange: #F5B324;     /* accent shifted from burnt-orange to amber, matching the mockup */
+  --paper: #0A1520;      /* page background (was light cream, now dark navy) */
+  --off-white: #0F1E2D;  /* card/section background, one step lighter than page */
+  --paper-solid: #F5F4F0; /* literal off-white, independent of the flipped --paper, for cards that must stay light */
+  --ink: #E8EDF2;        /* base body text */
+  --line: #1C3040;       /* borders */
 }
 
 * {
@@ -47,7 +49,7 @@ a {
 }
 
 .career-card:hover {
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
 }
 
 .job-listing {
@@ -89,7 +91,6 @@ a {
 .press-release:hover {
   border-color: var(--orange) !important;
 }
-/* Add to end of src/app/globals.css */
 
 .career-card {
   transition: all 0.2s ease;
@@ -97,7 +98,7 @@ a {
 
 .career-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
 }
 
 .job-listing {
@@ -106,5 +107,5 @@ a {
 
 .job-listing:hover {
   border-color: var(--orange) !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
