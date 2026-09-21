@@ -33,12 +33,12 @@ export function ListingCard({ listing }: { listing: Listing }) {
             </span>
           </div>
         )}
-        {listing.status && listing.status !== 'active' && (
+        {(listing as { status?: string }).status && (listing as { status?: string }).status !== 'active' && (
           <span
             className="absolute top-2 left-2 px-2 py-1 text-[11px] font-semibold rounded-sm"
             style={{ backgroundColor: 'var(--navy)', color: 'var(--paper)' }}
           >
-            {STATUS_LABEL[listing.status] ?? listing.status}
+            {STATUS_LABEL[(listing as { status?: string }).status!] ?? (listing as { status?: string }).status}
           </span>
         )}
       </div>
