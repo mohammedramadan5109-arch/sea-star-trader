@@ -30,8 +30,9 @@ export function TrustBar() {
         {TRUST_ITEMS.map(({ icon: Icon, title, body }, i) => (
           <div
             key={title}
-            className="px-8 py-8"
-            style={{ borderLeft: i === 0 ? 'none' : '1px solid var(--line)' }}
+            className={`px-6 sm:px-8 py-6 sm:py-8 border-[var(--line)] ${
+              i === 0 ? '' : 'border-t sm:border-t lg:border-t-0 lg:border-l'
+            }`}
           >
             <div className="flex items-center gap-2 mb-2">
               <Icon size={20} style={{ color: 'var(--orange)' }} />

@@ -1,51 +1,68 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import { MapPin } from 'lucide-react';
 import type { Listing } from '@/queries/useListings';
 
-interface ListingCardProps {
-  listing: Listing;
-}
+const STATUS_LABEL: Record<string, string> = {
+  pending: 'Pending review',
+  active: 'Available',
+  rejected: 'Not available',
+  sold: 'Sold',
+};
 
-export function ListingCard({ listing }: ListingCardProps) {
-  const imageUrl = listing.photos && listing.photos.length > 0 
-    ? listing.photos[0] 
-    : '/placeholder-equipment.jpg';
+export function ListingCard({ listing }: { listing: Listing }) {
+  const photo = listing.photos?.[0];
+  const title = `${listing.year ? listing.year + ' ' : ''}${listing.make} ${listing.model}`;
 
   return (
     <Link
       href={`/listings/${listing.id}`}
-      className="block rounded-sm overflow-hidden border border-[var(--line)] hover:shadow-lg transition-shadow"
+      className="block rounded-sm overflow-hidden border hover:shadow-lg transition-shadow"
+      style={{ borderColor: 'var(--line)' }}
     >
-      <div className="relative h-48 w-full">
-        <Image
-          src={imageUrl}
-          alt={`${listing.make} ${listing.model}`}
-          fill
-          className="object-cover"
-        />
-      </div>
-      <div className="p-4">
-        <h3 className="font-bold mb-2" style={{ color: 'var(--navy)' }}>
-          {listing.year && `${listing.year} `}
-          {listing.make} {listing.model}
-        </h3>
-        <p className="text-sm mb-2" style={{ color: 'var(--slate)' }}>
-          {listing.equipment_type}
-        </p>
-        <div className="flex items-center justify-between text-sm mb-3">
-          <span style={{ color: 'var(--slate)' }}>{listing.location}</span>
-          {listing.condition && (
-            <span className="text-xs px-2 py-0.5 rounded-sm bg-[var(--off-white)]" style={{ color: 'var(--navy)' }}>
-              {listing.condition}
-            </span>
-          )}
-        </div>
-        {listing.asking_price && (
-          <div style={{ borderTop: '1px solid var(--line)' }} className="pt-3">
-            <span className="text-sm font-bold" style={{ color: 'var(--orange)' }}>
-              ${listing.asking_price.toLocaleString()}
+      <div className="relative w-full aspect-[4/3]">
+        {photo ? (
+          <Image src={photo} alt={title} fill className="object-cover" sizes="(max-width: 768px) 100vw, 33vw" />
+        ) : (
+          <div
+            className="w-full h-full flex items-center justify-center"
+            style={{ backgroundColor: 'var(--off-white)' }}
+          >
+            <span className="text-sm" style={{ color: 'var(--slate)' }}>
+              No image
             </span>
           </div>
+        )}
+        {listing.status && listing.status !== 'active' && (
+          <span
+            className="absolute top-2 left-2 px-2 py-1 text-[11px] font-semibold rounded-sm"
+            style={{ backgroundColor: 'var(--navy)', color: 'var(--paper)' }}
+          >
+            {STATUS_LABEL[listing.status] ?? listing.status}
+          </span>
+        )}
+      </div>
+
+      <div className="p-4">
+        <h3 className="font-bold text-sm sm:text-base mb-1 truncate" style={{ color: 'var(--navy)' }}>
+          {title}
+        </h3>
+
+        {listing.location && (
+          <div className="flex items-center gap-1 text-xs mb-2" style={{ color: 'var(--slate)' }}>
+            <MapPin size={13} className="shrink-0" />
+            <span className="truncate">{listing.location}</span>
+          </div>
+        )}
+
+        {listing.asking_price ? (
+          <p className="text-sm sm:text-base font-bold" style={{ color: 'var(--orange)' }}>
+            ${Number(listing.asking_price).toLocaleString()}
+          </p>
+        ) : (
+          <p className="text-sm font-semibold" style={{ color: 'var(--slate)' }}>
+            Price on request
+          </p>
         )}
       </div>
     </Link>
