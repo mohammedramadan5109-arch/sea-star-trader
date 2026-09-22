@@ -199,7 +199,7 @@ export function SellEquipmentTeaser() {
                 <button
                   type="submit"
                   disabled={isPending}
-                  className="w-full py-3 text-sm font-bold rounded-lg disabled:opacity-50"
+                  className="w-full py-3 text-sm font-bold rounded-lg disabled:opacity-50 transition-transform duration-150 active:scale-[0.98]"
                   style={{ backgroundColor: ACCENT, color: CARD_LABEL }}
                 >
                   {isPending ? 'Submitting...' : 'Get a Free Valuation'}

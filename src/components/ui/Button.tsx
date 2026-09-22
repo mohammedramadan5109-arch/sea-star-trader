@@ -1,5 +1,3 @@
-// src/components/ui/Button.tsx
-
 import React from 'react';
 import { cn } from '@/lib/utils/cn';
 
@@ -17,7 +15,7 @@ export function Button({
   ...props
 }: ButtonProps) {
   // rounded-lg = slight radius, matching the repainted mockup's softer corners
-  const baseStyles = 'text-sm font-semibold rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2';
+  const baseStyles = 'text-sm font-semibold rounded-lg transition-all duration-150 active:scale-[0.97] focus:outline-none focus:ring-2 focus:ring-offset-2';
 
   const variants = {
     primary: 'bg-[var(--orange)] text-[var(--paper)] hover:opacity-90 focus:ring-orange-500',

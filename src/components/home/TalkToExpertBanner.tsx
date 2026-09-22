@@ -16,14 +16,14 @@ export function TalkToExpertBanner() {
         <div className="flex flex-wrap gap-3 shrink-0">
           <a
             href="tel:+18005550134"
-            className="flex items-center gap-2 px-5 py-2.5 text-sm font-semibold rounded-lg transition-opacity hover:opacity-90"
+            className="flex items-center gap-2 px-5 py-2.5 text-sm font-semibold rounded-lg transition-all duration-150 hover:opacity-90 active:scale-[0.97]"
             style={{ backgroundColor: 'var(--paper)', color: 'var(--navy)' }}
           >
             <Phone size={15} /> Call +1 (800) 555-0134
           </a>
           <Link
             href="/contact"
-            className="flex items-center gap-2 px-5 py-2.5 text-sm font-semibold rounded-lg transition-opacity hover:opacity-90"
+            className="flex items-center gap-2 px-5 py-2.5 text-sm font-semibold rounded-lg transition-all duration-150 hover:opacity-90 active:scale-[0.97]"
             style={{ backgroundColor: 'var(--paper)', color: 'var(--navy)' }}
           >
             <FileText size={15} /> Contact Form

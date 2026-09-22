@@ -14,7 +14,7 @@ export function ListingActions({ emailSubject, emailBody, whatsappMessage }: Lis
     <div className="flex flex-col gap-3">
       <a
         href={`mailto:${CONTACT_EMAIL}?subject=${emailSubject}&body=${emailBody}`}
-        className="flex items-center justify-center gap-2 px-5 py-3 text-sm font-bold rounded-lg"
+        className="flex items-center justify-center gap-2 px-5 py-3 text-sm font-bold rounded-lg transition-transform duration-150 active:scale-[0.97]"
         style={{ backgroundColor: 'var(--lst-accent)', color: '#1A1200' }}
       >
         <Mail size={18} />
@@ -24,7 +24,7 @@ export function ListingActions({ emailSubject, emailBody, whatsappMessage }: Lis
         href={`https://wa.me/${CONTACT_WHATSAPP}?text=${whatsappMessage}`}
         target="_blank"
         rel="noopener noreferrer"
-        className="flex items-center justify-center gap-2 px-5 py-3 text-sm font-semibold rounded-lg border"
+        className="flex items-center justify-center gap-2 px-5 py-3 text-sm font-semibold rounded-lg border transition-transform duration-150 active:scale-[0.97]"
         style={{ borderColor: 'var(--lst-border)', color: 'var(--lst-text)' }}
       >
         <MessageCircle size={18} color="#25D366" />

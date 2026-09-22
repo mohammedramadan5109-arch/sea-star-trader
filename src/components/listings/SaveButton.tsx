@@ -53,7 +53,7 @@ export function SaveButton({
     <button
       onClick={handleToggle}
       disabled={pending}
-      className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-lg border shrink-0 disabled:opacity-50"
+      className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-lg border shrink-0 disabled:opacity-50 transition-transform duration-150 active:scale-95"
       style={{
         borderColor: saved ? 'var(--lst-accent)' : 'var(--lst-border)',
         color: saved ? 'var(--lst-accent)' : 'var(--lst-text-muted)',

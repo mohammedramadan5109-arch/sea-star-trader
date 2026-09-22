@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Menu, X, Search } from 'lucide-react';
 import { NavLink } from '@/components/nav/NavLink';
@@ -31,6 +31,14 @@ export function Header() {
     setActiveMenu(activeMenu === menu ? null : menu);
   };
 
+  // Lock background scroll while the drawer is open
+  useEffect(() => {
+    document.body.style.overflow = mobileOpen ? 'hidden' : '';
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [mobileOpen]);
+
   return (
     <header className="sticky top-0 z-50">
       {/* Row 1: Logo, search, auth */}
@@ -39,12 +47,12 @@ export function Header() {
         style={{ backgroundColor: 'var(--off-white)', borderColor: 'var(--line)' }}
       >
         <button
-          className="md:hidden shrink-0"
+          className="md:hidden shrink-0 transition-transform duration-150 active:scale-90"
           style={{ color: 'var(--ink)' }}
-          onClick={() => setMobileOpen((v) => !v)}
-          aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
+          onClick={() => setMobileOpen(true)}
+          aria-label="Open menu"
         >
-          {mobileOpen ? <X size={24} /> : <Menu size={24} />}
+          <Menu size={24} />
         </button>
 
         <Link
@@ -55,14 +63,12 @@ export function Header() {
           Sea<span style={{ color: 'var(--orange)' }}>Star</span>Trader
         </Link>
 
-        {/* Full search bar — desktop only */}
         <div className="hidden md:block flex-1">
           <SearchBar />
         </div>
 
-        {/* Search icon — mobile only, opens a full-width search row */}
         <button
-          className="md:hidden ml-auto"
+          className="md:hidden ml-auto transition-transform duration-150 active:scale-90"
           style={{ color: 'var(--ink)' }}
           onClick={() => setMobileSearchOpen((v) => !v)}
           aria-label="Search"
@@ -76,18 +82,17 @@ export function Header() {
           </Link>
           <Link
             href="/register"
-            className="px-5 py-2 text-sm font-semibold rounded-lg"
+            className="px-5 py-2 text-sm font-semibold rounded-lg transition-transform duration-150 active:scale-[0.97]"
             style={{ backgroundColor: 'var(--orange)', color: 'var(--paper)' }}
           >
             Create Account
           </Link>
         </div>
 
-        {/* Compact auth — mobile only */}
         <div className="flex md:hidden items-center gap-2 shrink-0">
           <Link
             href="/register"
-            className="px-3 py-1.5 text-xs font-semibold rounded-lg whitespace-nowrap"
+            className="px-3 py-1.5 text-xs font-semibold rounded-lg whitespace-nowrap transition-transform duration-150 active:scale-[0.97]"
             style={{ backgroundColor: 'var(--orange)', color: 'var(--paper)' }}
           >
             Sign up
@@ -95,12 +100,19 @@ export function Header() {
         </div>
       </div>
 
-      {/* Mobile search row */}
-      {mobileSearchOpen && (
-        <div className="md:hidden px-4 py-3 border-b" style={{ backgroundColor: 'var(--off-white)', borderColor: 'var(--line)' }}>
+      {/* Mobile search row — fades/slides open instead of popping in */}
+      <div
+        className="md:hidden overflow-hidden transition-all duration-300 ease-out"
+        style={{
+          maxHeight: mobileSearchOpen ? '120px' : '0px',
+          backgroundColor: 'var(--off-white)',
+          borderBottom: mobileSearchOpen ? '1px solid var(--line)' : 'none',
+        }}
+      >
+        <div className="px-4 py-3">
           <SearchBar />
         </div>
-      )}
+      </div>
 
       {/* Row 2: Nav — desktop only */}
       <nav
@@ -155,60 +167,72 @@ export function Header() {
         </div>
       </nav>
 
-      {/* Mobile menu drawer */}
-      {mobileOpen && (
+      {/* Mobile menu drawer — always mounted, animated via transform/opacity
+          so it slides in/out instead of snapping. pointer-events toggled
+          so the closed, off-screen drawer doesn't block clicks. */}
+      <div
+        className="md:hidden fixed inset-0 z-40 transition-opacity duration-300 ease-out"
+        style={{
+          backgroundColor: 'rgba(0,0,0,0.5)',
+          opacity: mobileOpen ? 1 : 0,
+          pointerEvents: mobileOpen ? 'auto' : 'none',
+        }}
+        onClick={() => setMobileOpen(false)}
+      >
         <div
-          className="md:hidden fixed inset-0 z-40"
-          style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}
-          onClick={() => setMobileOpen(false)}
+          className="absolute top-0 left-0 h-full w-72 max-w-[80vw] p-4 overflow-y-auto transition-transform duration-300 ease-out"
+          style={{
+            backgroundColor: '#0F1E2D',
+            transform: mobileOpen ? 'translateX(0)' : 'translateX(-100%)',
+          }}
+          onClick={(e) => e.stopPropagation()}
         >
-          <div
-            className="absolute top-0 left-0 h-full w-72 max-w-[80vw] p-4 overflow-y-auto"
-            style={{ backgroundColor: '#0F1E2D' }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex items-center justify-between mb-6">
-              <span className="text-sm font-bold" style={{ color: '#FFFFFF' }}>
-                Menu
-              </span>
-              <button onClick={() => setMobileOpen(false)} aria-label="Close menu" style={{ color: '#FFFFFF' }}>
-                <X size={22} />
-              </button>
-            </div>
-            <nav className="space-y-1">
-              {MOBILE_LINKS.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  onClick={() => setMobileOpen(false)}
-                  className="block px-3 py-3 text-sm font-medium rounded-md"
-                  style={{ color: '#FFFFFF' }}
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </nav>
-            <div className="mt-6 pt-6 border-t space-y-2" style={{ borderColor: '#1C3040' }}>
+          <div className="flex items-center justify-between mb-6">
+            <span className="text-sm font-bold" style={{ color: '#FFFFFF' }}>
+              Menu
+            </span>
+            <button
+              onClick={() => setMobileOpen(false)}
+              aria-label="Close menu"
+              style={{ color: '#FFFFFF' }}
+              className="transition-transform duration-150 active:scale-90"
+            >
+              <X size={22} />
+            </button>
+          </div>
+          <nav className="space-y-1">
+            {MOBILE_LINKS.map((link) => (
               <Link
-                href="/login"
+                key={link.href}
+                href={link.href}
                 onClick={() => setMobileOpen(false)}
-                className="block px-3 py-3 text-sm font-semibold rounded-md text-center border"
-                style={{ color: '#FFFFFF', borderColor: '#1C3040' }}
+                className="block px-3 py-3 text-sm font-medium rounded-md transition-colors active:bg-white/10"
+                style={{ color: '#FFFFFF' }}
               >
-                Log in
+                {link.label}
               </Link>
-              <Link
-                href="/register"
-                onClick={() => setMobileOpen(false)}
-                className="block px-3 py-3 text-sm font-semibold rounded-md text-center"
-                style={{ backgroundColor: 'var(--orange)', color: 'var(--paper)' }}
-              >
-                Create account
-              </Link>
-            </div>
+            ))}
+          </nav>
+          <div className="mt-6 pt-6 border-t space-y-2" style={{ borderColor: '#1C3040' }}>
+            <Link
+              href="/login"
+              onClick={() => setMobileOpen(false)}
+              className="block px-3 py-3 text-sm font-semibold rounded-md text-center border transition-transform duration-150 active:scale-[0.97]"
+              style={{ color: '#FFFFFF', borderColor: '#1C3040' }}
+            >
+              Log in
+            </Link>
+            <Link
+              href="/register"
+              onClick={() => setMobileOpen(false)}
+              className="block px-3 py-3 text-sm font-semibold rounded-md text-center transition-transform duration-150 active:scale-[0.97]"
+              style={{ backgroundColor: 'var(--orange)', color: 'var(--paper)' }}
+            >
+              Create account
+            </Link>
           </div>
         </div>
-      )}
+      </div>
     </header>
   );
 }

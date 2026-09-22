@@ -75,7 +75,7 @@ export function HeroSearch() {
 
       <button
         type="submit"
-        className="px-8 py-3 md:py-0 font-semibold text-sm"
+        className="px-8 py-3 md:py-0 font-semibold text-sm transition-transform duration-150 active:scale-[0.97]"
         style={{ backgroundColor: 'var(--orange)', color: 'var(--paper)' }}
       >
         Search
