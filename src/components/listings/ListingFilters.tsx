@@ -7,7 +7,7 @@ import { slugify } from '@/lib/utils/slugify';
 export function ListingFilters() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  
+
   const currentCategory = searchParams.get('category') || '';
   const currentSubcategory = searchParams.get('subcategory') || '';
 
@@ -15,7 +15,7 @@ export function ListingFilters() {
     const params = new URLSearchParams(searchParams.toString());
     if (categorySlug) {
       params.set('category', categorySlug);
-      params.delete('subcategory'); // Reset subcategory when category changes
+      params.delete('subcategory');
     } else {
       params.delete('category');
       params.delete('subcategory');
@@ -33,14 +33,15 @@ export function ListingFilters() {
     router.push(`/listings?${params.toString()}`);
   };
 
-  // Get subcategories for current category
   const currentCategoryName = Object.keys(CATEGORY_SLUGS).find(
     (key) => CATEGORY_SLUGS[key] === currentCategory
   );
   const subcategories = currentCategoryName ? CATEGORY_STRUCTURE[currentCategoryName] : [];
 
   return (
-    <aside className="w-64 shrink-0 border-r border-[var(--line)] pr-6">
+    <aside
+      className="w-full lg:w-64 shrink-0 pb-6 lg:pb-0 border-b lg:border-b-0 lg:border-r border-[var(--line)] lg:pr-6"
+    >
       <div className="mb-6">
         <h3 className="text-sm font-bold uppercase tracking-wide mb-3" style={{ color: 'var(--navy)' }}>
           Category
@@ -49,7 +50,7 @@ export function ListingFilters() {
           value={currentCategory}
           onChange={(e) => handleCategoryChange(e.target.value)}
           className="w-full px-3 py-2 text-sm rounded-sm border focus:outline-none"
-          style={{ borderColor: 'var(--line)', backgroundColor: 'var(--paper)' }}
+          style={{ borderColor: 'var(--line)', backgroundColor: 'var(--paper)', color: 'var(--ink)' }}
         >
           <option value="">All Categories</option>
           {CATEGORIES.map((cat) => (
@@ -69,7 +70,7 @@ export function ListingFilters() {
             value={currentSubcategory}
             onChange={(e) => handleSubcategoryChange(e.target.value)}
             className="w-full px-3 py-2 text-sm rounded-sm border focus:outline-none"
-            style={{ borderColor: 'var(--line)', backgroundColor: 'var(--paper)' }}
+            style={{ borderColor: 'var(--line)', backgroundColor: 'var(--paper)', color: 'var(--ink)' }}
           >
             <option value="">All Subcategories</option>
             {subcategories.map((sub) => (
@@ -99,13 +100,13 @@ export function ListingFilters() {
             router.push(`/listings?${params.toString()}`);
           }}
           className="w-full px-3 py-2 text-sm rounded-sm border focus:outline-none"
-          style={{ borderColor: 'var(--line)', backgroundColor: 'var(--paper)' }}
+          style={{ borderColor: 'var(--line)', backgroundColor: 'var(--paper)', color: 'var(--ink)' }}
         />
       </div>
 
       <button
         onClick={() => router.push('/listings')}
-        className="w-full px-4 py-2 text-sm font-semibold rounded-sm border"
+        className="w-full px-4 py-2 text-sm font-semibold rounded-lg border"
         style={{ borderColor: 'var(--line)', color: 'var(--navy)' }}
       >
         Clear All Filters

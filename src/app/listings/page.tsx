@@ -9,7 +9,7 @@ import { Spinner } from '@/components/ui/Spinner';
 
 function ListingsContent() {
   const searchParams = useSearchParams();
-  
+
   const category = searchParams.get('category') || undefined;
   const subcategory = searchParams.get('subcategory') || undefined;
   const search = searchParams.get('search') || undefined;
@@ -23,9 +23,9 @@ function ListingsContent() {
   });
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-12">
-      <div className="mb-8">
-        <h1 className="text-3xl font-extrabold mb-2" style={{ color: 'var(--navy)' }}>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
+      <div className="mb-6 sm:mb-8">
+        <h1 className="text-2xl sm:text-3xl font-extrabold mb-2" style={{ color: 'var(--navy)' }}>
           {search ? `Search results for "${search}"` : 'Equipment Listings'}
         </h1>
         <p className="text-sm" style={{ color: 'var(--slate)' }}>
@@ -33,10 +33,10 @@ function ListingsContent() {
         </p>
       </div>
 
-      <div className="flex gap-8">
+      <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
         <ListingFilters />
-        
-        <div className="flex-1">
+
+        <div className="flex-1 min-w-0">
           {isLoading ? (
             <div className="flex justify-center py-12">
               <Spinner size={40} />
