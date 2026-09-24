@@ -100,3 +100,20 @@ export async function setSellerVerified(profileId: string, verified: boolean) {
   revalidatePath('/admin/users');
   return { verified };
 }
+
+export async function toggleFeatured(listingId: string, featured: boolean) {
+  await requireAdmin();
+  const admin = createAdminClient();
+
+  const { error } = await admin
+    .from('listings')
+    .update({ is_featured: featured, updated_at: new Date().toISOString() })
+    .eq('id', listingId);
+
+  if (error) throw new Error(error.message);
+
+  revalidatePath('/admin/listings');
+  revalidatePath('/');
+
+  return { featured };
+}
