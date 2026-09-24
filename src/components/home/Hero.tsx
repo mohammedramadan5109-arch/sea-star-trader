@@ -1,90 +1,54 @@
-'use client';
+import Link from 'next/link';
+import { HeroSearch } from '@/components/search/HeroSearch';
 
-import { CATEGORIES, CATEGORY_SLUGS } from '@/lib/constants/categories';
-
-export function HeroSearch() {
+export function Hero() {
   return (
-    <form
-      action="/listings"
-      method="GET"
-      className="flex flex-col md:flex-row rounded-lg overflow-hidden max-w-3xl mb-4"
-      style={{
-        backgroundColor: 'rgba(255,255,255,0.12)',
-        backdropFilter: 'blur(12px)',
-        WebkitBackdropFilter: 'blur(12px)',
-        border: '1px solid rgba(255,255,255,0.25)',
-      }}
-    >
-      <label
-        className="flex-1 px-4 py-3 border-b md:border-b-0 md:border-r"
-        style={{ borderColor: 'rgba(255,255,255,0.2)' }}
-      >
-        <span
-          className="block text-xs font-semibold uppercase tracking-wide mb-1"
-          style={{ color: 'rgba(255,255,255,0.7)' }}
-        >
-          Equipment type
-        </span>
-        <select
-          name="type"
-          className="w-full text-sm bg-transparent focus:outline-none [&>option]:text-black"
-          style={{ color: '#FFFFFF' }}
-        >
-          <option value="">Any type</option>
-          <option>Excavators</option>
-          <option>Cranes</option>
-          <option>Trucks</option>
-          <option>Tractors</option>
-        </select>
-      </label>
+    <section className="relative overflow-hidden py-12 sm:py-16 md:py-24 px-4 sm:px-6">
+      <div
+        className="absolute inset-0 hero-kenburns"
+        style={{
+          backgroundImage:
+            'linear-gradient(90deg, rgba(14,34,51,0.55) 0%, rgba(14,34,51,0.25) 60%, rgba(14,34,51,0.15) 100%), url("/hero-excavator.jpg")',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }}
+      />
 
-      <label
-        className="flex-1 px-4 py-3 border-b md:border-b-0 md:border-r"
-        style={{ borderColor: 'rgba(255,255,255,0.2)' }}
-      >
-        <span
-          className="block text-xs font-semibold uppercase tracking-wide mb-1"
-          style={{ color: 'rgba(255,255,255,0.7)' }}
+      <div className="relative max-w-6xl mx-auto">
+        <h1
+          className="animate-fade-in-up text-2xl sm:text-3xl md:text-5xl font-extrabold text-white leading-tight max-w-3xl mb-5 md:mb-8"
+          style={{ animationDelay: '0.05s' }}
         >
-          Category
-        </span>
-        <select
-          name="category"
-          className="w-full text-sm bg-transparent focus:outline-none [&>option]:text-black"
-          style={{ color: '#FFFFFF' }}
-        >
-          <option value="">All categories</option>
-          {CATEGORIES.map((c) => (
-            <option key={c} value={CATEGORY_SLUGS[c]}>
-              {c}
-            </option>
-          ))}
-        </select>
-      </label>
+          We combine worldwide reach with hands-on help, so you sell smarter.
+        </h1>
 
-      <label className="flex-1 px-4 py-3 border-b md:border-b-0">
-        <span
-          className="block text-xs font-semibold uppercase tracking-wide mb-1"
-          style={{ color: 'rgba(255,255,255,0.7)' }}
-        >
-          Location
-        </span>
-        <input
-          name="location"
-          type="text"
-          placeholder="Country or region"
-          className="w-full text-sm bg-transparent focus:outline-none placeholder-white/50"
-          style={{ color: '#FFFFFF' }}
-        />
-      </label>
+        <div className="animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+          <HeroSearch />
+        </div>
 
-      <button
-        type="submit"
-        className="btn-3d px-8 py-3 md:py-0 font-semibold text-sm"
-        style={{ backgroundColor: 'var(--orange)', color: 'var(--paper)' }}
-      >
-        Search
-      </button>
-    </form>
+        <div
+          className="animate-fade-in-up flex flex-col sm:flex-row flex-wrap gap-4"
+          style={{ animationDelay: '0.35s' }}
+        >
+          <Link
+            href="/listings"
+            className="btn-3d px-6 py-3 text-sm font-semibold rounded-lg text-center"
+            style={{ backgroundColor: 'var(--orange)', color: 'var(--paper)' }}
+          >
+            Browse Equipment
+          </Link>
+          <Link
+            href="/sell"
+            className="btn-3d px-6 py-3 text-sm font-semibold rounded-lg text-center"
+            style={{
+              backgroundColor: 'var(--paper)',
+              color: 'var(--navy)',
+            }}
+          >
+            Sell Your Equipment
+          </Link>
+        </div>
+      </div>
+    </section>
   );
 }
