@@ -50,8 +50,9 @@ export function useListings(params: UseListingsParams = {}) {
     queryFn: async (): Promise<Listing[]> => {
       const supabase = createClient();
 
-      const applyFilters = (q: ReturnType<typeof supabase.from>) => {
-        let query = q.in('status', ['active', 'approved']);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      function applyFilters(query: any) {
+        query = query.in('status', ['active', 'approved']);
 
         if (category) query = query.eq('category', category);
         if (subcategory) query = query.eq('subcategory', subcategory);
@@ -69,14 +70,14 @@ export function useListings(params: UseListingsParams = {}) {
         }
 
         return query;
-      };
+      }
 
       if (!featured) {
         const { data, error } = await applyFilters(
           supabase.from('listings').select('*')
         ).limit(limit);
         if (error) throw error;
-        return data || [];
+        return (data || []) as Listing[];
       }
 
       // Featured mode: get admin-picked listings first.
@@ -85,12 +86,12 @@ export function useListings(params: UseListingsParams = {}) {
       ).limit(limit);
       if (featuredError) throw featuredError;
 
-      const featuredListings = featuredData || [];
+      const featuredListings = (featuredData || []) as Listing[];
       if (featuredListings.length >= limit) return featuredListings;
 
       // Not enough featured listings — top up with the latest non-featured
       // ones so the section still shows a full row.
-      const excludeIds = featuredListings.map((l) => l.id);
+      const excludeIds = featuredListings.map((l: Listing) => l.id);
       let fillQuery = applyFilters(
         supabase.from('listings').select('*').eq('is_featured', false)
       ).limit(limit - featuredListings.length);
@@ -102,7 +103,7 @@ export function useListings(params: UseListingsParams = {}) {
       const { data: fillData, error: fillError } = await fillQuery;
       if (fillError) throw fillError;
 
-      return [...featuredListings, ...(fillData || [])];
+      return [...featuredListings, ...((fillData || []) as Listing[])];
     },
     staleTime: 60 * 1000,
   });
