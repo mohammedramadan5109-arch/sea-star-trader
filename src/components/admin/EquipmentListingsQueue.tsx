@@ -2,7 +2,9 @@
 
 import { useState, useTransition } from 'react';
 import Link from 'next/link';
+import { Star } from 'lucide-react';
 import { reviewListing } from '@/app/admin/listings/actions';
+import { toggleFeatured } from '@/app/admin/listings/[id]/edit/actions';
 
 interface Listing {
   id: string;
@@ -14,6 +16,7 @@ interface Listing {
   status: string;
   location: string | null;
   created_at: string;
+  is_featured?: boolean;
 }
 
 const STATUS_STYLES: Record<string, string> = {
@@ -27,6 +30,7 @@ export function EquipmentListingsQueue({ listings }: { listings: Listing[] }) {
   const [items, setItems] = useState(listings);
   const [isPending, startTransition] = useTransition();
   const [pendingId, setPendingId] = useState<string | null>(null);
+  const [featurePendingId, setFeaturePendingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   function handleReview(id: string, action: 'approve' | 'reject') {
@@ -42,6 +46,23 @@ export function EquipmentListingsQueue({ listings }: { listings: Listing[] }) {
         setError(err instanceof Error ? err.message : 'Something went wrong.');
       } finally {
         setPendingId(null);
+      }
+    });
+  }
+
+  function handleToggleFeatured(id: string, next: boolean) {
+    setError(null);
+    setFeaturePendingId(id);
+    startTransition(async () => {
+      try {
+        const { featured } = await toggleFeatured(id, next);
+        setItems((prev) =>
+          prev.map((item) => (item.id === id ? { ...item, is_featured: featured } : item))
+        );
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Something went wrong.');
+      } finally {
+        setFeaturePendingId(null);
       }
     });
   }
@@ -63,6 +84,7 @@ export function EquipmentListingsQueue({ listings }: { listings: Listing[] }) {
             <th className="px-5 py-3 font-medium">Asking price</th>
             <th className="px-5 py-3 font-medium">Location</th>
             <th className="px-5 py-3 font-medium">Status</th>
+            <th className="px-5 py-3 font-medium">Homepage</th>
             <th className="px-5 py-3 font-medium">Submitted</th>
             <th className="px-5 py-3 font-medium text-right">Actions</th>
           </tr>
@@ -91,6 +113,18 @@ export function EquipmentListingsQueue({ listings }: { listings: Listing[] }) {
                   >
                     {item.status}
                   </span>
+                </td>
+                <td className="px-5 py-4">
+                  <button
+                    disabled={featurePendingId === item.id}
+                    onClick={() => handleToggleFeatured(item.id, !item.is_featured)}
+                    className="flex items-center gap-1.5 text-xs font-semibold disabled:opacity-50"
+                    style={{ color: item.is_featured ? 'var(--admin-accent)' : 'var(--admin-text-muted)' }}
+                    title={item.is_featured ? 'Remove from homepage' : 'Show on homepage'}
+                  >
+                    <Star size={14} fill={item.is_featured ? 'var(--admin-accent)' : 'none'} />
+                    {item.is_featured ? 'Featured' : 'Feature'}
+                  </button>
                 </td>
                 <td className="px-5 py-4" style={{ color: 'var(--admin-text-muted)' }}>
                   {new Date(item.created_at).toLocaleDateString()}
@@ -131,7 +165,7 @@ export function EquipmentListingsQueue({ listings }: { listings: Listing[] }) {
           })}
           {items.length === 0 && (
             <tr>
-              <td colSpan={6} className="px-5 py-10 text-center" style={{ color: 'var(--admin-text-muted)' }}>
+              <td colSpan={7} className="px-5 py-10 text-center" style={{ color: 'var(--admin-text-muted)' }}>
                 No listings to review.
               </td>
             </tr>

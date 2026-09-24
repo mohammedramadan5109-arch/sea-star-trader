@@ -6,7 +6,7 @@ import { useListings } from '@/queries/useListings';
 import Image from 'next/image';
 
 export function LatestEquipmentBento() {
-  const { data: listings, isLoading } = useListings({ limit: 6, orderBy: 'created_at' });
+  const { data: listings, isLoading } = useListings({ limit: 8, orderBy: 'created_at', featured: true });
 
   if (isLoading) {
     return (

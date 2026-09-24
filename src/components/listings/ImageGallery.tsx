@@ -122,7 +122,7 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
         >
           <button
             onClick={() => setIsLightboxOpen(false)}
-            className="absolute top-4 right-4 p-2 text-white/80 hover:text-white"
+            className="absolute top-4 right-4 z-10 p-2 text-white/80 hover:text-white"
             aria-label="Close"
           >
             <X size={32} />
@@ -134,14 +134,14 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
                 e.stopPropagation();
                 goToPrevious();
               }}
-              className="absolute left-4 top-1/2 -translate-y-1/2 p-2 text-white/80 hover:text-white"
+              className="absolute left-4 top-1/2 -translate-y-1/2 z-10 p-2 text-white/80 hover:text-white"
               aria-label="Previous image"
             >
               <ChevronLeft size={36} />
             </button>
           )}
 
-          <div className="relative w-[90vw] h-[85vh]" onClick={(e) => e.stopPropagation()}>
+          <div className="relative z-0 w-[90vw] h-[85vh]" onClick={(e) => e.stopPropagation()}>
             <Image
               src={images[currentIndex]}
               alt={`${alt} - Image ${currentIndex + 1}`}
@@ -158,7 +158,7 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
                 e.stopPropagation();
                 goToNext();
               }}
-              className="absolute right-4 top-1/2 -translate-y-1/2 p-2 text-white/80 hover:text-white"
+              className="absolute right-4 top-1/2 -translate-y-1/2 z-10 p-2 text-white/80 hover:text-white"
               aria-label="Next image"
             >
               <ChevronRight size={36} />
@@ -166,7 +166,7 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
           )}
 
           {images.length > 1 && (
-            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 text-white/80 text-sm">
+            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 text-white/80 text-sm">
               {currentIndex + 1} / {images.length}
             </div>
           )}

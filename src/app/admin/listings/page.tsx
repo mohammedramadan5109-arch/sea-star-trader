@@ -18,7 +18,7 @@ export default async function AdminListingsPage({
 
   let query = supabase
     .from('listings')
-    .select('id, make, model, year, equipment_type, asking_price, status, location, created_at')
+    .select('id, make, model, year, equipment_type, asking_price, status, location, created_at, is_featured')
     .order('created_at', { ascending: false });
 
   if (status !== 'all') {
