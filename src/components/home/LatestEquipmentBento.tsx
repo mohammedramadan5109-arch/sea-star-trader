@@ -55,7 +55,7 @@ export function LatestEquipmentBento() {
           <Link
             key={listing.id}
             href={`/listings/${listing.id}`}
-            className={`block rounded-sm overflow-hidden border border-[var(--line)] hover:shadow-lg transition-shadow ${getSizeClass(
+            className={`card-tilt block rounded-sm overflow-hidden border border-[var(--line)] ${getSizeClass(
               index
             )}`}
           >

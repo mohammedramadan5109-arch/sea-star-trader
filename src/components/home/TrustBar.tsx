@@ -30,7 +30,7 @@ export function TrustBar() {
         {TRUST_ITEMS.map(({ icon: Icon, title, body }, i) => (
           <div
             key={title}
-            className={`px-6 sm:px-8 py-6 sm:py-8 border-[var(--line)] ${
+            className={`card-tilt px-6 sm:px-8 py-6 sm:py-8 border-[var(--line)] ${
               i === 0 ? '' : 'border-t sm:border-t lg:border-t-0 lg:border-l'
             }`}
           >

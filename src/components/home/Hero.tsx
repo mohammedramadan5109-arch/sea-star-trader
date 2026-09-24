@@ -1,49 +1,90 @@
-import Link from 'next/link';
-import { HeroSearch } from '@/components/search/HeroSearch';
+'use client';
 
-export function Hero() {
+import { CATEGORIES, CATEGORY_SLUGS } from '@/lib/constants/categories';
+
+export function HeroSearch() {
   return (
-    <section className="relative overflow-hidden py-12 sm:py-16 md:py-24 px-4 sm:px-6">
-      {/* Animated background layer — separate from the content below so the
-          zoom doesn't scale the text/buttons along with the image. */}
-      <div
-        className="absolute inset-0 hero-kenburns"
-        style={{
-          backgroundImage:
-            'linear-gradient(90deg, rgba(14,34,51,0.55) 0%, rgba(14,34,51,0.25) 60%, rgba(14,34,51,0.15) 100%), url("/hero-excavator.jpg")',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-        }}
-      />
+    <form
+      action="/listings"
+      method="GET"
+      className="flex flex-col md:flex-row rounded-lg overflow-hidden max-w-3xl mb-4"
+      style={{
+        backgroundColor: 'rgba(255,255,255,0.12)',
+        backdropFilter: 'blur(12px)',
+        WebkitBackdropFilter: 'blur(12px)',
+        border: '1px solid rgba(255,255,255,0.25)',
+      }}
+    >
+      <label
+        className="flex-1 px-4 py-3 border-b md:border-b-0 md:border-r"
+        style={{ borderColor: 'rgba(255,255,255,0.2)' }}
+      >
+        <span
+          className="block text-xs font-semibold uppercase tracking-wide mb-1"
+          style={{ color: 'rgba(255,255,255,0.7)' }}
+        >
+          Equipment type
+        </span>
+        <select
+          name="type"
+          className="w-full text-sm bg-transparent focus:outline-none [&>option]:text-black"
+          style={{ color: '#FFFFFF' }}
+        >
+          <option value="">Any type</option>
+          <option>Excavators</option>
+          <option>Cranes</option>
+          <option>Trucks</option>
+          <option>Tractors</option>
+        </select>
+      </label>
 
-      <div className="relative max-w-6xl mx-auto">
-        <h1 className="text-2xl sm:text-3xl md:text-5xl font-extrabold text-white leading-tight max-w-3xl mb-5 md:mb-8">
-          We combine worldwide reach with hands-on help, so you sell smarter.
-        </h1>
+      <label
+        className="flex-1 px-4 py-3 border-b md:border-b-0 md:border-r"
+        style={{ borderColor: 'rgba(255,255,255,0.2)' }}
+      >
+        <span
+          className="block text-xs font-semibold uppercase tracking-wide mb-1"
+          style={{ color: 'rgba(255,255,255,0.7)' }}
+        >
+          Category
+        </span>
+        <select
+          name="category"
+          className="w-full text-sm bg-transparent focus:outline-none [&>option]:text-black"
+          style={{ color: '#FFFFFF' }}
+        >
+          <option value="">All categories</option>
+          {CATEGORIES.map((c) => (
+            <option key={c} value={CATEGORY_SLUGS[c]}>
+              {c}
+            </option>
+          ))}
+        </select>
+      </label>
 
-        <HeroSearch />
+      <label className="flex-1 px-4 py-3 border-b md:border-b-0">
+        <span
+          className="block text-xs font-semibold uppercase tracking-wide mb-1"
+          style={{ color: 'rgba(255,255,255,0.7)' }}
+        >
+          Location
+        </span>
+        <input
+          name="location"
+          type="text"
+          placeholder="Country or region"
+          className="w-full text-sm bg-transparent focus:outline-none placeholder-white/50"
+          style={{ color: '#FFFFFF' }}
+        />
+      </label>
 
-        <div className="flex flex-col sm:flex-row flex-wrap gap-3">
-          <Link
-            href="/listings"
-            className="px-6 py-3 text-sm font-semibold rounded-lg text-center transition-transform duration-150 active:scale-[0.97]"
-            style={{ backgroundColor: 'var(--orange)', color: 'var(--paper)' }}
-          >
-            Browse Equipment
-          </Link>
-          <Link
-            href="/sell"
-            className="px-6 py-3 text-sm font-semibold rounded-lg border text-center transition-transform duration-150 active:scale-[0.97]"
-            style={{
-              backgroundColor: 'var(--paper)',
-              color: 'var(--navy)',
-              borderColor: 'var(--line)',
-            }}
-          >
-            Sell Your Equipment
-          </Link>
-        </div>
-      </div>
-    </section>
+      <button
+        type="submit"
+        className="btn-3d px-8 py-3 md:py-0 font-semibold text-sm"
+        style={{ backgroundColor: 'var(--orange)', color: 'var(--paper)' }}
+      >
+        Search
+      </button>
+    </form>
   );
 }

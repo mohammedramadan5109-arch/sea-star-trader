@@ -116,6 +116,72 @@ a {
   }
 }
 
+/* Entrance animation for hero content */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.7s ease-out both;
+}
+
+/* "Pressable" 3D button: raised shadow that compresses on tap/click */
+.btn-3d {
+  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.25), 0 8px 16px rgba(0, 0, 0, 0.2);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.btn-3d:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 0 rgba(0, 0, 0, 0.25), 0 12px 20px rgba(0, 0, 0, 0.25);
+}
+
+.btn-3d:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.25), 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+/* Subtle 3D tilt + lift for cards on hover */
+.card-tilt {
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+}
+
+.card-tilt:hover {
+  transform: perspective(800px) rotateX(2deg) rotateY(-2deg) translateY(-6px) scale(1.02);
+  box-shadow: 0 24px 40px rgba(0, 0, 0, 0.35);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-in-up,
+  .btn-3d,
+  .card-tilt {
+    animation: none !important;
+    transition: none !important;
+  }
+  .btn-3d:hover,
+  .btn-3d:active,
+  .card-tilt:hover {
+    transform: none !important;
+    box-shadow: none !important;
+  }
+}
+
+/* Touch devices have no real hover state — force gallery controls
+   (prev/next arrows) to always be visible instead of relying on
+   :hover, which can appear to "stick" on one element after a tap. */
+@media (hover: none) {
+  .gallery-arrow {
+    opacity: 1 !important;
+  }
+}
+
 .career-card {
   transition: all 0.2s ease;
 }
