@@ -3,7 +3,7 @@ import { HeroSearch } from '@/components/search/HeroSearch';
 
 export function Hero() {
   return (
-    <section className="relative overflow-hidden py-12 sm:py-16 md:py-24 px-4 sm:px-6">
+    <section className="relative overflow-hidden flex flex-col justify-center min-h-[60vh] sm:min-h-[70vh] md:min-h-[78vh] py-12 px-4 sm:px-6">
       <div
         className="absolute inset-0 hero-kenburns"
         style={{
