@@ -6,6 +6,7 @@ import React from 'react';
 import { MegaMenu } from './MegaMenu';
 import { SidebarMegaMenu } from './SidebarMegaMenu';
 import { SERVICES, SERVICE_SLUGS } from '@/lib/constants/services';
+import { useLanguage } from '@/components/providers/LanguageProvider';
 
 interface ServicesMenuProps {
   isOpen: boolean;
@@ -13,15 +14,16 @@ interface ServicesMenuProps {
 }
 
 export function ServicesMenu({ isOpen, onClose }: ServicesMenuProps) {
+  const { tk } = useLanguage();
   const menuItems = SERVICES.map((service) => ({
-    label: service,
+    label: tk('services', service),
     href: `/services/${SERVICE_SLUGS[service]}`,
   }));
 
   return (
     <MegaMenu isOpen={isOpen} onClose={onClose}>
       <SidebarMegaMenu
-        title="All Services"
+        titleKey="nav.allServices"
         titleHref="/services"
         items={menuItems}
         hasSubcategories={false}

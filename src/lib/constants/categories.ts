@@ -5,6 +5,8 @@ export const CATEGORY_STRUCTURE: Record<string, string[]> = {
     'Articulated Dump Trucks',
     'Asphalt Compactor',
     'Dozers',
+    'Bulldozers',
+    'Motor Graders',
     'Wheel Loader',
     'Excavators',
     'Skid Steer Loaders',
@@ -62,7 +64,6 @@ export const CATEGORY_STRUCTURE: Record<string, string[]> = {
     'Safety Equipment',
   ],
   'Material Handling': [
-    'Forklifts',
     'Pallet Jacks',
     'Reach Trucks',
     'Stackers',

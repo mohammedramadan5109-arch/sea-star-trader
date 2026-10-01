@@ -1,8 +1,10 @@
 'use client';
 
 import { CATEGORIES, CATEGORY_SLUGS } from '@/lib/constants/categories';
+import { useLanguage } from '@/components/providers/LanguageProvider';
 
 export function HeroSearch() {
+  const { t, tc } = useLanguage();
   return (
     <form
       action="/listings"
@@ -23,14 +25,14 @@ export function HeroSearch() {
           className="block text-xs font-semibold uppercase tracking-wide mb-1"
           style={{ color: 'rgba(255,255,255,0.7)' }}
         >
-          Equipment type
+          {t('hero.equipmentType')}
         </span>
         <select
           name="type"
           className="w-full text-sm bg-transparent focus:outline-none [&>option]:text-black"
           style={{ color: '#FFFFFF' }}
         >
-          <option value="">Any type</option>
+          <option value="">{t('hero.anyType')}</option>
           <option>Excavators</option>
           <option>Cranes</option>
           <option>Trucks</option>
@@ -46,17 +48,17 @@ export function HeroSearch() {
           className="block text-xs font-semibold uppercase tracking-wide mb-1"
           style={{ color: 'rgba(255,255,255,0.7)' }}
         >
-          Category
+          {t('hero.category')}
         </span>
         <select
           name="category"
           className="w-full text-sm bg-transparent focus:outline-none [&>option]:text-black"
           style={{ color: '#FFFFFF' }}
         >
-          <option value="">All categories</option>
+          <option value="">{t('hero.allCategories')}</option>
           {CATEGORIES.map((c) => (
             <option key={c} value={CATEGORY_SLUGS[c]}>
-              {c}
+              {tc(c)}
             </option>
           ))}
         </select>
@@ -67,12 +69,12 @@ export function HeroSearch() {
           className="block text-xs font-semibold uppercase tracking-wide mb-1"
           style={{ color: 'rgba(255,255,255,0.7)' }}
         >
-          Location
+          {t('hero.location')}
         </span>
         <input
           name="location"
           type="text"
-          placeholder="Country or region"
+          placeholder={t('hero.locationPlaceholder')}
           className="w-full text-sm bg-transparent focus:outline-none placeholder-white/50"
           style={{ color: '#FFFFFF' }}
         />
@@ -83,7 +85,7 @@ export function HeroSearch() {
         className="btn-3d px-8 py-3 md:py-0 font-semibold text-sm"
         style={{ backgroundColor: 'var(--orange)', color: 'var(--paper)' }}
       >
-        Search
+        {t('hero.search')}
       </button>
     </form>
   );

@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { useLanguage } from '@/components/providers/LanguageProvider';
 
 export interface MenuItem {
   label: string;
@@ -11,7 +12,7 @@ export interface MenuItem {
 }
 
 interface SidebarMegaMenuProps {
-  title: string;
+  titleKey: string;
   titleHref: string;
   items: MenuItem[];
   hasSubcategories?: boolean;
@@ -26,12 +27,13 @@ const TEXT_MUTED = '#8FA3B5';
 const ACCENT = '#F5B324';
 
 export function SidebarMegaMenu({
-  title,
+  titleKey,
   titleHref,
   items,
   hasSubcategories = false,
 }: SidebarMegaMenuProps) {
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
+  const { t } = useLanguage();
 
   return (
     <div className="flex">
@@ -43,7 +45,7 @@ export function SidebarMegaMenu({
             className="text-sm font-bold uppercase tracking-wide"
             style={{ color: TEXT }}
           >
-            {title}
+            {t(titleKey)}
           </Link>
         </div>
 
@@ -54,11 +56,11 @@ export function SidebarMegaMenu({
               <Link
                 key={item.label}
                 href={item.href}
-                className="block px-4 py-3 text-sm transition-colors border-l-2"
+                className="block px-4 py-3 text-sm transition-colors border-s-2"
                 style={{
                   color: isHovered ? ACCENT : TEXT,
                   backgroundColor: isHovered ? BG_SURFACE : 'transparent',
-                  borderLeftColor: isHovered ? ACCENT : 'transparent',
+                  borderInlineStartColor: isHovered ? ACCENT : 'transparent',
                 }}
                 onMouseEnter={() => setHoveredItem(item.label)}
               >
@@ -111,7 +113,7 @@ export function SidebarMegaMenu({
             </div>
           ) : (
             <div className="py-12 text-center text-sm" style={{ color: TEXT_MUTED }}>
-              Hover over a category
+              {t('nav.hoverCategory')}
             </div>
           )
         ) : (

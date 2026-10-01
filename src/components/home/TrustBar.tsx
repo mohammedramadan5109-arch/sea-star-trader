@@ -1,35 +1,39 @@
-import { Globe, Settings, Wrench, Search } from 'lucide-react';
+'use client';
 
-const TRUST_ITEMS = [
-  {
-    icon: Globe,
-    title: 'Global reach',
-    body: "Tap into the world's largest network of serious equipment buyers.",
-  },
-  {
-    icon: Settings,
-    title: 'Flexible',
-    body: 'Auctions, fixed price, or private sale — choose what works for you.',
-  },
-  {
-    icon: Wrench,
-    title: 'Full-service',
-    body: 'From inspection to payment, we handle every step.',
-  },
-  {
-    icon: Search,
-    title: 'Transparent',
-    body: 'No hidden fees — know exactly how and when your equipment sells.',
-  },
-];
+import { Globe, Settings, Wrench, Search } from 'lucide-react';
+import { useLanguage } from '@/components/providers/LanguageProvider';
 
 export function TrustBar() {
+  const { t } = useLanguage();
+
+  const TRUST_ITEMS = [
+    {
+      icon: Globe,
+      titleKey: 'trust.globalReach' as const,
+      bodyKey: 'trust.globalReachBody' as const,
+    },
+    {
+      icon: Settings,
+      titleKey: 'trust.flexible' as const,
+      bodyKey: 'trust.flexibleBody' as const,
+    },
+    {
+      icon: Wrench,
+      titleKey: 'trust.fullService' as const,
+      bodyKey: 'trust.fullServiceBody' as const,
+    },
+    {
+      icon: Search,
+      titleKey: 'trust.transparent' as const,
+      bodyKey: 'trust.transparentBody' as const,
+    },
+  ];
   return (
     <section style={{ backgroundColor: 'var(--off-white)' }}>
       <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
-        {TRUST_ITEMS.map(({ icon: Icon, title, body }, i) => (
+        {TRUST_ITEMS.map(({ icon: Icon, titleKey, bodyKey }, i) => (
           <div
-            key={title}
+            key={titleKey}
             className={`card-tilt px-6 sm:px-8 py-6 sm:py-8 border-[var(--line)] ${
               i === 0 ? '' : 'border-t sm:border-t lg:border-t-0 lg:border-l'
             }`}
@@ -37,11 +41,11 @@ export function TrustBar() {
             <div className="flex items-center gap-2 mb-2">
               <Icon size={20} style={{ color: 'var(--orange)' }} />
               <span className="font-bold text-sm" style={{ color: 'var(--navy)' }}>
-                {title}
+                {t(titleKey)}
               </span>
             </div>
             <p className="text-sm" style={{ color: 'var(--slate)' }}>
-              {body}
+              {t(bodyKey)}
             </p>
           </div>
         ))}

@@ -1,7 +1,11 @@
+'use client';
+
 import Link from 'next/link';
 import { HeroSearch } from '@/components/search/HeroSearch';
+import { useLanguage } from '@/components/providers/LanguageProvider';
 
 export function Hero() {
+  const { t } = useLanguage();
   return (
     <section className="relative overflow-hidden flex flex-col justify-center min-h-[60vh] sm:min-h-[70vh] md:min-h-[78vh] py-12 px-4 sm:px-6">
       <div
@@ -14,12 +18,12 @@ export function Hero() {
         }}
       />
 
-      <div className="relative max-w-6xl mx-auto">
+      <div className="relative w-full max-w-6xl mx-auto">
         <h1
           className="animate-fade-in-up text-2xl sm:text-3xl md:text-5xl font-extrabold text-white leading-tight max-w-3xl mb-5 md:mb-8"
           style={{ animationDelay: '0.05s' }}
         >
-          We combine worldwide reach with hands-on help, so you sell smarter.
+          {t('hero.title')}
         </h1>
 
         <div className="animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
@@ -35,7 +39,7 @@ export function Hero() {
             className="btn-3d px-6 py-3 text-sm font-semibold rounded-lg text-center"
             style={{ backgroundColor: 'var(--orange)', color: 'var(--paper)' }}
           >
-            Browse Equipment
+            {t('hero.browse')}
           </Link>
           <Link
             href="/sell"
@@ -45,7 +49,7 @@ export function Hero() {
               color: 'var(--navy)',
             }}
           >
-            Sell Your Equipment
+            {t('hero.sell')}
           </Link>
         </div>
       </div>

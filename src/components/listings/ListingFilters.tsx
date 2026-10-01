@@ -3,10 +3,12 @@
 import { useRouter, useSearchParams } from 'next/navigation';
 import { CATEGORIES, CATEGORY_SLUGS, CATEGORY_STRUCTURE } from '@/lib/constants/categories';
 import { slugify } from '@/lib/utils/slugify';
+import { useLanguage } from '@/components/providers/LanguageProvider';
 
 export function ListingFilters() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { t, tc, tk } = useLanguage();
 
   const currentCategory = searchParams.get('category') || '';
   const currentSubcategory = searchParams.get('subcategory') || '';
@@ -44,7 +46,7 @@ export function ListingFilters() {
     >
       <div className="mb-6">
         <h3 className="text-sm font-bold uppercase tracking-wide mb-3" style={{ color: 'var(--navy)' }}>
-          Category
+          {t('listings.category')}
         </h3>
         <select
           value={currentCategory}
@@ -52,10 +54,10 @@ export function ListingFilters() {
           className="w-full px-3 py-2 text-sm rounded-sm border focus:outline-none"
           style={{ borderColor: 'var(--line)', backgroundColor: 'var(--paper)', color: 'var(--ink)' }}
         >
-          <option value="">All Categories</option>
+          <option value="">{t('listings.allCategories')}</option>
           {CATEGORIES.map((cat) => (
             <option key={cat} value={CATEGORY_SLUGS[cat]}>
-              {cat}
+              {tc(cat)}
             </option>
           ))}
         </select>
@@ -63,19 +65,19 @@ export function ListingFilters() {
 
       {subcategories.length > 0 && (
         <div className="mb-6">
-          <h3 className="text-sm font-bold uppercase tracking-wide mb-3" style={{ color: 'var(--navy)' }}>
-            Subcategory
-          </h3>
+        <h3 className="text-sm font-bold uppercase tracking-wide mb-3" style={{ color: 'var(--navy)' }}>
+          {t('listings.subcategory')}
+        </h3>
           <select
             value={currentSubcategory}
             onChange={(e) => handleSubcategoryChange(e.target.value)}
             className="w-full px-3 py-2 text-sm rounded-sm border focus:outline-none"
             style={{ borderColor: 'var(--line)', backgroundColor: 'var(--paper)', color: 'var(--ink)' }}
           >
-            <option value="">All Subcategories</option>
+            <option value="">{t('listings.allSubcategories')}</option>
             {subcategories.map((sub) => (
               <option key={sub} value={slugify(sub)}>
-                {sub}
+                {tk('subcategories', sub)}
               </option>
             ))}
           </select>
@@ -84,11 +86,11 @@ export function ListingFilters() {
 
       <div className="mb-6">
         <h3 className="text-sm font-bold uppercase tracking-wide mb-3" style={{ color: 'var(--navy)' }}>
-          Location
+          {t('listings.location')}
         </h3>
         <input
           type="text"
-          placeholder="City, country"
+          placeholder={t('listings.locationPlaceholder')}
           defaultValue={searchParams.get('location') || ''}
           onBlur={(e) => {
             const params = new URLSearchParams(searchParams.toString());
@@ -109,7 +111,7 @@ export function ListingFilters() {
         className="w-full px-4 py-2 text-sm font-semibold rounded-lg border"
         style={{ borderColor: 'var(--line)', color: 'var(--navy)' }}
       >
-        Clear All Filters
+        {t('listings.clearFilters')}
       </button>
     </aside>
   );

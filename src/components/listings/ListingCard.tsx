@@ -1,16 +1,19 @@
+'use client';
+
 import Link from 'next/link';
 import Image from 'next/image';
 import { MapPin } from 'lucide-react';
 import type { Listing } from '@/queries/useListings';
-
-const STATUS_LABEL: Record<string, string> = {
-  pending: 'Pending review',
-  active: 'Available',
-  rejected: 'Not available',
-  sold: 'Sold',
-};
+import { useLanguage } from '@/components/providers/LanguageProvider';
 
 export function ListingCard({ listing }: { listing: Listing }) {
+  const { t } = useLanguage();
+  const STATUS_LABEL: Record<string, string> = {
+    pending: t('listings.statusPending'),
+    active: t('listings.statusActive'),
+    rejected: t('listings.statusRejected'),
+    sold: t('listings.statusSold'),
+  };
   const photo = listing.photos?.[0];
   const title = `${listing.year ? listing.year + ' ' : ''}${listing.make} ${listing.model}`;
 
@@ -29,7 +32,7 @@ export function ListingCard({ listing }: { listing: Listing }) {
             style={{ backgroundColor: 'var(--off-white)' }}
           >
             <span className="text-sm" style={{ color: 'var(--slate)' }}>
-              No image
+              {t('listings.noImage')}
             </span>
           </div>
         )}
@@ -61,7 +64,7 @@ export function ListingCard({ listing }: { listing: Listing }) {
           </p>
         ) : (
           <p className="text-sm font-semibold" style={{ color: 'var(--slate)' }}>
-            Price on request
+            {t('listings.priceOnRequest')}
           </p>
         )}
       </div>

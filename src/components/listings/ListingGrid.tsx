@@ -1,19 +1,24 @@
+'use client';
+
 import { ListingCard } from './ListingCard';
 import type { Listing } from '@/queries/useListings';
+import { useLanguage } from '@/components/providers/LanguageProvider';
 
 interface ListingGridProps {
   listings: Listing[];
 }
 
 export function ListingGrid({ listings }: ListingGridProps) {
+  const { t } = useLanguage();
+
   if (listings.length === 0) {
     return (
       <div className="text-center py-12">
         <p className="text-lg font-semibold mb-2" style={{ color: 'var(--navy)' }}>
-          No equipment found
+          {t('listings.noResultsTitle')}
         </p>
         <p className="text-sm" style={{ color: 'var(--slate)' }}>
-          Try adjusting your filters or search query
+          {t('listings.noResultsBody')}
         </p>
       </div>
     );

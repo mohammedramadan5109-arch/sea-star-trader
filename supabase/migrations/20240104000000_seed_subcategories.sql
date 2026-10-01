@@ -27,6 +27,8 @@ BEGIN
     (construction_id, 'Articulated Dump Trucks', 'articulated-dump-trucks'),
     (construction_id, 'Asphalt Compactor', 'asphalt-compactor'),
     (construction_id, 'Dozers', 'dozers'),
+    (construction_id, 'Bulldozers', 'bulldozers'),
+    (construction_id, 'Motor Graders', 'motor-graders'),
     (construction_id, 'Wheel Loader', 'wheel-loader'),
     (construction_id, 'Excavators', 'excavators'),
     (construction_id, 'Skid Steer Loaders', 'skid-steer-loaders'),
@@ -90,7 +92,6 @@ BEGIN
 
   -- Material Handling
   INSERT INTO subcategories (category_id, name, slug) VALUES
-    (material_id, 'Forklifts', 'forklifts'),
     (material_id, 'Pallet Jacks', 'pallet-jacks'),
     (material_id, 'Reach Trucks', 'reach-trucks'),
     (material_id, 'Stackers', 'stackers'),

@@ -4,14 +4,16 @@ import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { useListings } from '@/queries/useListings';
 import Image from 'next/image';
+import { useLanguage } from '@/components/providers/LanguageProvider';
 
 export function LatestEquipmentBento() {
+  const { t } = useLanguage();
   const { data: listings, isLoading } = useListings({ limit: 8, orderBy: 'created_at', featured: true });
 
   if (isLoading) {
     return (
       <section className="max-w-6xl mx-auto px-6 py-16">
-        <div className="text-center py-12 text-[var(--slate)]">Loading latest equipment...</div>
+        <div className="text-center py-12 text-[var(--slate)]">{t('latest.loading')}</div>
       </section>
     );
   }
@@ -19,7 +21,7 @@ export function LatestEquipmentBento() {
   if (!listings || listings.length === 0) {
     return (
       <section className="max-w-6xl mx-auto px-6 py-16">
-        <div className="text-center py-12 text-[var(--slate)]">No equipment available yet.</div>
+        <div className="text-center py-12 text-[var(--slate)]">{t('latest.empty')}</div>
       </section>
     );
   }
@@ -35,10 +37,10 @@ export function LatestEquipmentBento() {
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-6 sm:mb-8">
         <div>
           <h2 className="text-2xl sm:text-3xl font-extrabold mb-2" style={{ color: 'var(--navy)' }}>
-            Latest Equipment
+            {t('latest.title')}
           </h2>
           <p className="text-sm max-w-md" style={{ color: 'var(--slate)' }}>
-            Newly listed heavy equipment from verified sellers worldwide.
+            {t('latest.subtitle')}
           </p>
         </div>
         <Link
@@ -46,7 +48,7 @@ export function LatestEquipmentBento() {
           className="flex items-center gap-1 text-sm font-semibold shrink-0"
           style={{ color: 'var(--orange)' }}
         >
-          View all listings <ArrowRight size={15} />
+          {t('latest.viewAll')} <ArrowRight size={15} />
         </Link>
       </div>
 
@@ -72,7 +74,7 @@ export function LatestEquipmentBento() {
                   className="w-full h-full flex items-center justify-center"
                   style={{ backgroundColor: 'var(--off-white)' }}
                 >
-                  <span className="text-sm text-[var(--slate)]">No image</span>
+                  <span className="text-sm text-[var(--slate)]">{t('latest.noImage')}</span>
                 </div>
               )}
               <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4 bg-gradient-to-t from-black/80 to-transparent">
