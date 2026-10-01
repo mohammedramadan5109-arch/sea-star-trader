@@ -28,6 +28,9 @@ yarn-error.log*
 # local dev server logs
 dev-server.log
 
+# one-off password recovery links (contain live tokens, never commit)
+password-reset-link.txt
+
 # vercel
 .vercel
 

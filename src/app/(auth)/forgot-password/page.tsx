@@ -39,7 +39,12 @@ export default function ForgotPasswordPage() {
       setSubmitted(true);
     } catch (error) {
       console.error('Password reset email error:', error);
-      toast.error('Failed to send reset email. Please try again.');
+      const authError = error as { status?: number; code?: string };
+      if (authError?.status === 429 || authError?.code === 'over_email_send_rate_limit') {
+        toast.error('Email limit reached. Please wait an hour and try again.');
+      } else {
+        toast.error('Failed to send reset email. Please try again.');
+      }
     } finally {
       setLoading(false);
     }
