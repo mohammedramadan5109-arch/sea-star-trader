@@ -2,7 +2,10 @@ import { z } from 'zod';
 
 export const loginSchema = z.object({
   email: z.string().email('Invalid email address'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
+  // Unified with register/reset at 8 chars (audit LOW-1). Note: an account
+  // created before this change with a 6–7 char password must use
+  // "Forgot password" once — Supabase itself still accepts it.
+  password: z.string().min(8, 'Password must be at least 8 characters'),
 });
 
 export const registerSchema = z.object({

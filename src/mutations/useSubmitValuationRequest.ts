@@ -10,11 +10,7 @@ export function useSubmitValuationRequest() {
 
   return useMutation({
     mutationFn: async (data: ValuationRequestFormData) => {
-      console.log('Starting valuation request submission with data:', data);
-      
       const supabase = createClient();
-
-      console.log('Supabase client created');
 
       try {
         const { data: request, error } = await supabase
@@ -34,8 +30,6 @@ export function useSubmitValuationRequest() {
   .select()
   .single();
 
-        console.log('Supabase response:', { request, error });
-
         if (error) {
           console.error('Supabase error:', error);
           throw error;
@@ -47,20 +41,12 @@ export function useSubmitValuationRequest() {
         throw err;
       }
     },
-    onSuccess: (data) => {
-      console.log('Mutation success:', data);
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin', 'valuation-requests'] });
       toast.success('Thanks! We will contact you within 24 hours.');
     },
     onError: (error: any) => {
-      console.error('Valuation request error:', error);
-      console.error('Error details:', {
-        message: error?.message,
-        details: error?.details,
-        hint: error?.hint,
-        code: error?.code,
-        full: JSON.stringify(error, null, 2),
-      });
+      console.error('Valuation request error:', error?.message);
       toast.error(error?.message || 'Failed to submit. Please try again.');
     },
   });
