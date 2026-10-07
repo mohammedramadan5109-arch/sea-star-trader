@@ -61,6 +61,15 @@ export function RegisterForm() {
         />
       </FormField>
 
+      <FormField label="Your Name" error={errors.name?.message} required>
+        <Input
+          {...register('name')}
+          type="text"
+          placeholder="Mohammed Ramadan"
+          error={errors.name?.message}
+        />
+      </FormField>
+
       <FormField label="Company Name" error={errors.company_name?.message} required>
         <Input
           {...register('company_name')}

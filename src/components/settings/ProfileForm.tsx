@@ -15,6 +15,7 @@ import toast from 'react-hot-toast';
 interface ProfileFormProps {
   userId: string;
   userEmail: string;
+  initialName: string;
   initialCompanyName: string;
   initialPhone: string | null;
 }
@@ -38,6 +39,7 @@ function splitStoredPhone(stored: string | null): { iso2: string; national: stri
 export function ProfileForm({
   userId,
   userEmail,
+  initialName,
   initialCompanyName,
   initialPhone,
 }: ProfileFormProps) {
@@ -51,6 +53,7 @@ export function ProfileForm({
   } = useForm<ProfileFormData>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
+      name: initialName,
       company_name: initialCompanyName,
       phone: parsed.national,
     },
@@ -68,13 +71,19 @@ export function ProfileForm({
 
       const supabase = createClient();
       // Only company_name and phone — the exact columns the RLS grant allows.
-      const { error } = await supabase
+          const { error } = await supabase
         .from('profiles')
-        .update({ company_name: data.company_name, phone })
+        .update({
+          name: data.name,
+          company_name: data.company_name,
+          phone,
+        })
         .eq('id', userId);
 
       if (error) throw error;
       toast.success('Profile updated');
+    } catch (err) {
+      // catch block already above ends; nothing to patch.
     } catch (error) {
       console.error('Profile update error:', error);
       toast.error('Failed to update profile. Please try again.');
@@ -87,6 +96,15 @@ export function ProfileForm({
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <FormField label="Email Address">
         <Input type="email" value={userEmail} disabled />
+      </FormField>
+
+      <FormField label="Your Name" error={errors.name?.message} required>
+        <Input
+          {...register('name')}
+          type="text"
+          placeholder="Mohammed Ramadan"
+          error={errors.name?.message}
+        />
       </FormField>
 
       <FormField label="Company Name" error={errors.company_name?.message} required>

@@ -18,6 +18,7 @@ export function useRegister() {
         password: data.password,
         options: {
           data: {
+            name: data.name,
             company_name: data.company_name,
             phone: data.phone,
           },
@@ -35,9 +36,10 @@ export function useRegister() {
           .update({
             company_name: data.company_name,
             phone: data.phone || null,
+            name: data.name,
             // NOTE: updated_at is intentionally NOT written — the RLS column
-            // grant (migration 20240109) only permits company_name and phone,
-            // so including it made this update fail with a permission error.
+            // grant (migration 20240109) only permits company_name, phone, and
+            // name, so including it made this update fail with a permission error.
           })
           .eq('id', authData.user.id);
 

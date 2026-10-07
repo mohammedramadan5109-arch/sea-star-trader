@@ -31,6 +31,7 @@ export default async function SettingsPage() {
           <ProfileForm
             userId={user.id}
             userEmail={user.email ?? ''}
+            initialName={profile?.name ?? ''}
             initialCompanyName={profile?.company_name ?? ''}
             initialPhone={profile?.phone ?? null}
           />

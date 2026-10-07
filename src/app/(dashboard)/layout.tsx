@@ -10,6 +10,11 @@ export default async function DashboardLayout({
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
+  // Grab the current user's profile so we can display a friendly name.
+  const { data: profile } = user
+    ? await supabase.from('profiles').select('name').eq('id', user.id).single()
+    : { data: null };
+
   if (!user) {
     redirect('/login');
   }
@@ -22,7 +27,9 @@ export default async function DashboardLayout({
             Sea<span style={{ color: 'var(--orange)' }}>Star</span>Trader
           </Link>
           <div className="flex items-center gap-4">
-            <span className="text-sm" style={{ color: 'var(--slate)' }}>{user.email}</span>
+            <span className="text-sm" style={{ color: 'var(--slate)' }}>
+              {profile?.name ?? user.email}
+            </span>
             <form action="/auth/signout" method="post">
               <button type="submit" className="text-sm font-semibold" style={{ color: 'var(--orange)' }}>
                 Sign Out

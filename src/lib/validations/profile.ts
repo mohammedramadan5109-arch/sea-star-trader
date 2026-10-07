@@ -5,6 +5,7 @@ import { z } from 'zod';
  * column grant (migration 20240109): only company_name and phone.
  */
 export const profileSchema = z.object({
+  name: z.string().trim().min(1, 'Name is required'),
   company_name: z.string().min(1, 'Company name is required'),
   phone: z.string().optional(),
 });

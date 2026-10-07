@@ -7,6 +7,7 @@ import { setSellerVerified } from '@/app/admin/listings/[id]/edit/actions';
 interface UserRow {
   id: string;
   email: string | null;
+  name: string | null;
   company_name: string | null;
   phone: string | null;
   role: string | null;
@@ -48,8 +49,9 @@ export function UsersTable({ users }: { users: UserRow[] }) {
       <table className="w-full text-sm">
         <thead>
           <tr className="text-left" style={{ color: 'var(--admin-text-muted)' }}>
-            <th className="px-5 py-3 font-medium">User</th>
+            <th className="px-5 py-3 font-medium">Name</th>
             <th className="px-5 py-3 font-medium">Company</th>
+            <th className="px-5 py-3 font-medium">Email</th>
             <th className="px-5 py-3 font-medium">Phone</th>
             <th className="px-5 py-3 font-medium">Role</th>
             <th className="px-5 py-3 font-medium">Verified</th>
@@ -65,9 +67,10 @@ export function UsersTable({ users }: { users: UserRow[] }) {
                 className="border-t"
                 style={{ borderColor: 'var(--admin-border)', color: 'var(--admin-text)' }}
               >
-                <td className="px-5 py-4">{user.email ?? '—'}</td>
-                <td className="px-5 py-4">{user.company_name ?? '—'}</td>
-                <td className="px-5 py-4">{user.phone ?? '—'}</td>
+              <td className="px-5 py-4">{user.name ?? user.email ?? '—'}</td>
+              <td className="px-5 py-4">{user.company_name ?? '—'}</td>
+              <td className="px-5 py-4">{user.email ?? '—'}</td>
+              <td className="px-5 py-4">{user.phone ?? '—'}</td>
                 <td className="px-5 py-4 capitalize">{user.role ?? 'user'}</td>
                 <td className="px-5 py-4">
                   {user.is_verified ? (
@@ -94,8 +97,7 @@ export function UsersTable({ users }: { users: UserRow[] }) {
             );
           })}
           {rows.length === 0 && (
-            <tr>
-              <td colSpan={6} className="px-5 py-10 text-center" style={{ color: 'var(--admin-text-muted)' }}>
+            <tr>                <td colSpan={7} className="px-5 py-10 text-center" style={{ color: 'var(--admin-text-muted)' }}>
                 No users found.
               </td>
             </tr>
