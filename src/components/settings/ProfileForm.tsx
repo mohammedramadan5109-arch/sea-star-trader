@@ -82,8 +82,6 @@ export function ProfileForm({
 
       if (error) throw error;
       toast.success('Profile updated');
-    } catch (err) {
-      // catch block already above ends; nothing to patch.
     } catch (error) {
       console.error('Profile update error:', error);
       toast.error('Failed to update profile. Please try again.');
