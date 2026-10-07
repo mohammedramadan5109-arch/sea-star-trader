@@ -4,15 +4,18 @@ const isDev = process.env.NODE_ENV !== 'production';
 
 // Content-Security-Policy — 'unsafe-eval' is only required for React DevTools
 // overlay / Turbopack HMR during development. Everything else is strict:
-// Supabase (auth + REST) is the only cross-origin connect target, Unsplash
-// and Supabase Storage are the only remote images.
+// Supabase (auth + REST) and hCaptcha (the captcha widget on the auth forms)
+// are the only cross-origin targets; Unsplash and Supabase Storage are the
+// only remote images.
 const csp = [
   "default-src 'self'",
-  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ''}`,
-  "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data: https://images.unsplash.com https://*.supabase.co",
+  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ''} https://hcaptcha.com https://*.hcaptcha.com`,
+  "style-src 'self' 'unsafe-inline' https://hcaptcha.com https://*.hcaptcha.com",
+  "img-src 'self' data: https://images.unsplash.com https://*.supabase.co https://hcaptcha.com https://*.hcaptcha.com",
   "font-src 'self'",
-  "connect-src 'self' https://*.supabase.co wss://*.supabase.co",
+  "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://hcaptcha.com https://*.hcaptcha.com",
+  // hCaptcha verifies the checkbox inside a cross-origin iframe.
+  "frame-src https://hcaptcha.com https://*.hcaptcha.com",
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'self'",

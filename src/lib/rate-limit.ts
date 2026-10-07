@@ -26,6 +26,8 @@ export interface RateLimitOptions {
 
 export interface RateLimitResult {
   ok: boolean;
+  /** Requests left in the current window after this one (0 when blocked). */
+  remaining: number;
   /** Seconds until the window resets (only meaningful when ok is false). */
   retryAfterSeconds: number;
 }
@@ -58,15 +60,28 @@ export function checkRateLimit(
   const bucket = buckets.get(key);
   if (!bucket || bucket.resetAt <= now) {
     buckets.set(key, { count: 1, resetAt: now + options.windowMs });
-    return { ok: true, retryAfterSeconds: 0 };
+    return { ok: true, remaining: options.limit - 1, retryAfterSeconds: 0 };
   }
 
   bucket.count += 1;
   if (bucket.count > options.limit) {
     return {
       ok: false,
+      remaining: 0,
       retryAfterSeconds: Math.max(1, Math.ceil((bucket.resetAt - now) / 1000)),
     };
   }
-  return { ok: true, retryAfterSeconds: 0 };
+  return {
+    ok: true,
+    remaining: options.limit - bucket.count,
+    retryAfterSeconds: 0,
+  };
+}
+
+/**
+ * Clear a client's bucket, e.g. after a successful login so that only
+ * FAILED attempts count toward the limit.
+ */
+export function resetRateLimit(name: string, identifier: string): void {
+  buckets.delete(`${name}:${identifier}`);
 }

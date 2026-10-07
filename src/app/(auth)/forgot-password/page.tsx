@@ -1,6 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
+import HCaptcha from '@hcaptcha/react-hcaptcha';
+import { HCAPTCHA_SITE_KEY } from '@/lib/captcha';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -19,6 +21,8 @@ type FormData = z.infer<typeof schema>;
 export default function ForgotPasswordPage() {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const captcha = useRef<HCaptcha>(null);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   const {
     register,
     handleSubmit,
@@ -28,11 +32,16 @@ export default function ForgotPasswordPage() {
   });
 
   const onSubmit = async (data: FormData) => {
+    if (!captchaToken) {
+      toast.error('Please complete the CAPTCHA.');
+      return;
+    }
     setLoading(true);
     try {
       const supabase = createClient();
       const { error } = await supabase.auth.resetPasswordForEmail(data.email, {
         redirectTo: `${window.location.origin}/auth/callback?next=/reset-password`,
+        captchaToken,
       });
       if (error) throw error;
       // Always show success, even for unknown emails, to prevent enumeration
@@ -40,12 +49,17 @@ export default function ForgotPasswordPage() {
     } catch (error) {
       console.error('Password reset email error:', error);
       const authError = error as { status?: number; code?: string };
-      if (authError?.status === 429 || authError?.code === 'over_email_send_rate_limit') {
+      if (authError?.code === 'captcha_failed') {
+        toast.error('CAPTCHA verification failed. Please complete the CAPTCHA and try again.');
+      } else if (authError?.status === 429 || authError?.code === 'over_email_send_rate_limit') {
         toast.error('Email limit reached. Please wait an hour and try again.');
       } else {
         toast.error('Failed to send reset email. Please try again.');
       }
     } finally {
+      // Tokens are single-use — always get a fresh one for the next try.
+      captcha.current?.resetCaptcha();
+      setCaptchaToken(null);
       setLoading(false);
     }
   };
@@ -87,6 +101,13 @@ export default function ForgotPasswordPage() {
             error={errors.email?.message}
           />
         </div>
+
+        <HCaptcha
+          ref={captcha}
+          sitekey={HCAPTCHA_SITE_KEY}
+          onVerify={(token) => setCaptchaToken(token)}
+          onExpire={() => setCaptchaToken(null)}
+        />
 
         <Button type="submit" className="w-full" disabled={loading}>
           {loading ? 'Sending…' : 'Send Reset Link'}

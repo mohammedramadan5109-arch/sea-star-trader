@@ -1,5 +1,7 @@
 'use client';
 
+import { useRef, useState } from 'react';
+import HCaptcha from '@hcaptcha/react-hcaptcha';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { registerSchema, type RegisterFormData } from '@/lib/validations/auth';
@@ -7,10 +9,17 @@ import { useRegister } from '@/mutations/useRegister';
 import { Input } from '@/components/ui/Input';
 import { FormField } from '@/components/forms/FormField';
 import { SubmitButton } from '@/components/forms/SubmitButton';
+import { HCAPTCHA_SITE_KEY } from '@/lib/captcha';
+import { dialFor } from '@/lib/country-codes';
+import { CountryCodeSelect } from '@/components/auth/CountryCodeSelect';
 import Link from 'next/link';
+import toast from 'react-hot-toast';
 
 export function RegisterForm() {
-  const { mutate, isPending } = useRegister();
+  const { mutateAsync, isPending } = useRegister();
+  const captcha = useRef<HCaptcha>(null);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const [countryIso, setCountryIso] = useState('EG'); // default: Egypt (+20)
   const {
     register,
     handleSubmit,
@@ -19,8 +28,26 @@ export function RegisterForm() {
     resolver: zodResolver(registerSchema),
   });
 
-  const onSubmit = (data: RegisterFormData) => {
-    mutate(data);
+  const onSubmit = async (data: RegisterFormData) => {
+    if (!captchaToken) {
+      toast.error('Please complete the CAPTCHA.');
+      return;
+    }
+    // Compose international format: +<dial> <number>, dropping spaces/dashes
+    // and any trunk-prefix zeros (e.g. 0101234567 with EG -> +20 101234567).
+    const digits = data.phone?.replace(/[\s\-().]/g, '');
+    const phone = digits
+      ? `+${dialFor(countryIso)} ${digits.replace(/^0+/, '')}`
+      : undefined;
+    try {
+      await mutateAsync({ ...data, phone, captchaToken });
+    } catch {
+      // Error toast already shown by useRegister
+    } finally {
+      // Tokens are single-use — always get a fresh one for the next try.
+      captcha.current?.resetCaptcha();
+      setCaptchaToken(null);
+    }
   };
 
   return (
@@ -43,12 +70,15 @@ export function RegisterForm() {
       </FormField>
 
       <FormField label="Phone Number" error={errors.phone?.message}>
-        <Input
-          {...register('phone')}
-          type="tel"
-          placeholder="+1 (555) 000-0000"
-          error={errors.phone?.message}
-        />
+        <div className="flex gap-2">
+          <CountryCodeSelect value={countryIso} onChange={setCountryIso} />
+          <Input
+            {...register('phone')}
+            type="tel"
+            placeholder="555 000 0000"
+            error={errors.phone?.message}
+          />
+        </div>
       </FormField>
 
       <FormField label="Password" error={errors.password?.message} required>
@@ -68,6 +98,13 @@ export function RegisterForm() {
           error={errors.confirmPassword?.message}
         />
       </FormField>
+
+      <HCaptcha
+        ref={captcha}
+        sitekey={HCAPTCHA_SITE_KEY}
+        onVerify={(token) => setCaptchaToken(token)}
+        onExpire={() => setCaptchaToken(null)}
+      />
 
       <SubmitButton loading={isPending}>Create Account</SubmitButton>
 

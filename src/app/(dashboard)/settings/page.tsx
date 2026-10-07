@@ -1,8 +1,15 @@
 import { createClient } from '@/lib/supabase/server';
+import { redirect } from 'next/navigation';
+import { ProfileForm } from '@/components/settings/ProfileForm';
 
 export default async function SettingsPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
+
+  // The dashboard layout already guards this, but TypeScript needs the check.
+  if (!user) {
+    redirect('/login');
+  }
 
   const { data: profile } = await supabase
     .from('profiles')
@@ -21,9 +28,12 @@ export default async function SettingsPage() {
           <h2 className="text-lg font-bold mb-4" style={{ color: 'var(--navy)' }}>
             Profile Information
           </h2>
-          <p className="text-sm" style={{ color: 'var(--slate)' }}>
-            Update form will be implemented here.
-          </p>
+          <ProfileForm
+            userId={user.id}
+            userEmail={user.email ?? ''}
+            initialCompanyName={profile?.company_name ?? ''}
+            initialPhone={profile?.phone ?? null}
+          />
         </div>
 
         <div className="p-6 rounded-sm border border-[var(--line)]" style={{ backgroundColor: 'var(--off-white)' }}>

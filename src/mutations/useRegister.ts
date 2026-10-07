@@ -11,7 +11,7 @@ export function useRegister() {
   const supabase = createClient();
 
   return useMutation({
-    mutationFn: async (data: RegisterFormData) => {
+    mutationFn: async (data: RegisterFormData & { captchaToken?: string | null }) => {
       // Create auth user
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: data.email,
@@ -21,6 +21,7 @@ export function useRegister() {
             company_name: data.company_name,
             phone: data.phone,
           },
+          captchaToken: data.captchaToken ?? undefined,
         },
       });
 
@@ -34,7 +35,9 @@ export function useRegister() {
           .update({
             company_name: data.company_name,
             phone: data.phone || null,
-            updated_at: new Date().toISOString(),
+            // NOTE: updated_at is intentionally NOT written — the RLS column
+            // grant (migration 20240109) only permits company_name and phone,
+            // so including it made this update fail with a permission error.
           })
           .eq('id', authData.user.id);
 
