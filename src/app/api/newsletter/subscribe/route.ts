@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { checkRateLimit, getClientIp } from '@/lib/rate-limit';
+import { createAdminClient } from '@/lib/supabase/admin';
 
 // 254 = RFC 5321 maximum email length
 const newsletterSchema = z.object({
@@ -35,8 +36,24 @@ export async function POST(request: Request) {
     );
   }
 
-  // TODO: Integrate with your email provider (Resend, Mailchimp, etc.)
-  // `parsed.data.email` is the validated address.
+  // High-2 fix: persist via service-role client. The UNIQUE(email)
+  // constraint makes re-subscribes idempotent — treat "duplicate key" as
+  // success so the UX stays friendly without revealing who is on the list.
+  const supabaseAdmin = createAdminClient();
+  const { error } = await supabaseAdmin
+    .from('newsletter_subscribers')
+    .upsert(
+      { email: parsed.data.email },
+      { onConflict: 'email', ignoreDuplicates: true }
+    );
+
+  if (error) {
+    console.error('[newsletter] failed to persist subscriber:', error.message);
+    return NextResponse.json(
+      { error: 'Failed to subscribe. Please try again shortly.' },
+      { status: 500 }
+    );
+  }
 
   return NextResponse.json({ success: true });
 }

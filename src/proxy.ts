@@ -47,16 +47,30 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL('/login', request.url));
   }
 
-  // ADMIN CHECK TEMPORARILY DISABLED FOR TESTING
-  /*
+  // ADMIN CHECK (restored — audit HIGH-4)
+  //
+  // This used to sit commented out "temporarily for testing". The admin
+  // layout and server actions still enforce role='admin' themselves, but
+  // this middleware is the outer gate: it stops non-admin traffic before
+  // any admin page or action handler even executes.
   if (request.nextUrl.pathname.startsWith('/admin')) {
     if (!user) {
       return NextResponse.redirect(new URL('/login', request.url));
     }
-    
-    // ... admin check code
+
+    // Confirm the logged-in user has the admin role against profiles.
+    // RLS keeps this read to the caller's own row, matching the layout's
+    // double-check below the middleware.
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .single();
+
+    if (profile?.role !== 'admin') {
+      return NextResponse.redirect(new URL('/dashboard', request.url));
+    }
   }
-  */
 
   return supabaseResponse;
 }

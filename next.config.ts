@@ -11,9 +11,11 @@ const csp = [
   "default-src 'self'",
   `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ''} https://hcaptcha.com https://*.hcaptcha.com`,
   "style-src 'self' 'unsafe-inline' https://hcaptcha.com https://*.hcaptcha.com",
-  "img-src 'self' data: https://images.unsplash.com https://*.supabase.co https://hcaptcha.com https://*.hcaptcha.com",
+  "img-src 'self' data: blob: https://images.unsplash.com https://*.supabase.co https://hcaptcha.com https://*.hcaptcha.com",
   "font-src 'self'",
-  "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://hcaptcha.com https://*.hcaptcha.com",
+  "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://hcaptcha.com https://*.hcaptcha.com https://api.mapbox.com https://events.mapbox.com https://*.tiles.mapbox.com",
+  // Mapbox GL JS runs its tile worker from a blob: URL.
+  "worker-src 'self' blob:",
   // hCaptcha verifies the checkbox inside a cross-origin iframe.
   "frame-src https://hcaptcha.com https://*.hcaptcha.com",
   "object-src 'none'",

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { contactSchema } from '@/lib/validations/contact';
 import { checkRateLimit, getClientIp } from '@/lib/rate-limit';
+import { createAdminClient } from '@/lib/supabase/admin';
 
 export async function POST(request: Request) {
   const rate = checkRateLimit(
@@ -31,10 +32,26 @@ export async function POST(request: Request) {
     );
   }
 
-  // TODO: Create an 'inquiries' table if you want to store these
-  // For now, you could send an email via Resend or another service.
-  // `parsed.data` is the validated payload:
-  // { name, email, phone?, subject, message, inquiry_type? }
+  // High-1 fix: persist to the `inquiries` table via the service-role
+  // client (bypasses RLS). The table is admin-only for reads through the
+  // public API — anon cannot even INSERT it directly, only this route can.
+  const supabaseAdmin = createAdminClient();
+  const { error } = await supabaseAdmin.from('inquiries').insert({
+    name: parsed.data.name,
+    email: parsed.data.email,
+    phone: parsed.data.phone ?? null,
+    subject: parsed.data.subject,
+    message: parsed.data.message,
+    inquiry_type: parsed.data.inquiry_type ?? 'general',
+  });
+
+  if (error) {
+    console.error('[contact] failed to persist inquiry:', error.message);
+    return NextResponse.json(
+      { error: 'Failed to submit your message. Please try again shortly.' },
+      { status: 500 }
+    );
+  }
 
   return NextResponse.json({ success: true });
 }

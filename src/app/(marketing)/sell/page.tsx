@@ -16,6 +16,7 @@ import { Button } from '@/components/ui/Button';
 import { CATEGORIES, CATEGORY_SLUGS, CATEGORY_STRUCTURE } from '@/lib/constants/categories';
 import { slugify } from '@/lib/utils/slugify';
 import { createClient } from '@/lib/supabase/client';
+import { geocodeLocation } from '@/lib/geocode';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 
@@ -89,6 +90,11 @@ export default function SellPage() {
         return;
       }
 
+      // Auto-geocode the seller's location string so the listing gets a pin
+      // on /map without any extra work for the seller. Failure is non-blocking:
+      // the listing is still created, just without coordinates.
+      const coords = await geocodeLocation(data.location);
+
       const askingPrice = data.asking_price ? parseFloat(data.asking_price) : null;
       const hours = data.hours ? parseInt(data.hours) : null;
 
@@ -110,6 +116,8 @@ export default function SellPage() {
         year: data.year,
         condition: data.condition,
         location: data.location,
+        latitude: coords?.latitude ?? null,
+        longitude: coords?.longitude ?? null,
         description: data.description || null,
         asking_price: askingPrice,
         photos: photos,
