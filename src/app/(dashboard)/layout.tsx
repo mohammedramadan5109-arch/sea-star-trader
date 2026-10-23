@@ -43,6 +43,13 @@ export default async function DashboardLayout({
         <aside className="w-64 shrink-0">
           <nav className="space-y-1">
             <Link
+              href="/"
+              className="block px-4 py-2 text-sm font-semibold rounded-sm hover:bg-[var(--off-white)]"
+              style={{ color: 'var(--orange)' }}
+            >
+              ← Back to Homepage
+            </Link>
+            <Link
               href="/dashboard"
               className="block px-4 py-2 text-sm font-medium rounded-sm hover:bg-[var(--off-white)]"
               style={{ color: 'var(--navy)' }}

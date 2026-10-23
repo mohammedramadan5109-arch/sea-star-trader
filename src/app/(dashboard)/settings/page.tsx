@@ -1,6 +1,12 @@
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import { ProfileForm } from '@/components/settings/ProfileForm';
+import { ChangePasswordForm } from '@/components/settings/ChangePasswordForm';
+import { EmailPreferencesForm } from '@/components/settings/EmailPreferencesForm';
+import {
+  parseEmailPreferences,
+  DEFAULT_EMAIL_PREFERENCES,
+} from '@/lib/validations/settings';
 
 export default async function SettingsPage() {
   const supabase = await createClient();
@@ -41,18 +47,24 @@ export default async function SettingsPage() {
           <h2 className="text-lg font-bold mb-4" style={{ color: 'var(--navy)' }}>
             Change Password
           </h2>
-          <p className="text-sm" style={{ color: 'var(--slate)' }}>
-            Password change form will be implemented here.
+          <p className="text-sm mb-4" style={{ color: 'var(--slate)' }}>
+            You&apos;ll be asked for your current password first. After changing it,
+            you&apos;ll be signed out and need to log in again.
           </p>
+          <ChangePasswordForm userEmail={user.email ?? ''} />
         </div>
 
         <div className="p-6 rounded-sm border border-[var(--line)]" style={{ backgroundColor: 'var(--off-white)' }}>
           <h2 className="text-lg font-bold mb-4" style={{ color: 'var(--navy)' }}>
             Email Preferences
           </h2>
-          <p className="text-sm" style={{ color: 'var(--slate)' }}>
-            Notification settings will be implemented here.
-          </p>
+          <EmailPreferencesForm
+            userId={user.id}
+            initialPreferences={parseEmailPreferences(
+              profile?.email_preferences,
+              DEFAULT_EMAIL_PREFERENCES
+            )}
+          />
         </div>
       </div>
     </div>

@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { Home } from 'lucide-react';
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 
@@ -54,6 +55,18 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           SeaStarTrader
         </div>
         <nav className="space-y-1">
+          {/* Public-site escape hatch for admins. Styled to stand apart from
+              the admin-only pages below it. */}
+          <Link
+            href="/"
+            className="block rounded-md px-3 py-2 text-sm font-semibold hover:opacity-80"
+            style={{ color: 'var(--admin-accent)' }}
+          >
+            <span className="inline-flex items-center gap-2">
+              <Home size={16} className="shrink-0" />
+              Homepage
+            </span>
+          </Link>
           {NAV.map((item) => (
             <Link
               key={item.href}
