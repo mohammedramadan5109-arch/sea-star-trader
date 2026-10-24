@@ -221,6 +221,24 @@ export default async function ListingDetailPage({
               emailBody={emailBody}
               whatsappMessage={whatsappMessage}
             />
+
+            {/* Small service cross-links; plain links so the page layout is untouched. */}
+            <div className="mt-3 flex flex-col gap-1 text-xs" style={{ color: 'var(--lst-text-muted)' }}>
+              <Link
+                href={`/services/inspection?listing=${id}`}
+                className="underline"
+                style={{ color: 'var(--lst-accent)' }}
+              >
+                Request inspection
+              </Link>
+              <Link
+                href={`/services/shipping?listing=${id}`}
+                className="underline"
+                style={{ color: 'var(--lst-accent)' }}
+              >
+                Get shipping quote
+              </Link>
+            </div>
           </aside>
         </div>
 

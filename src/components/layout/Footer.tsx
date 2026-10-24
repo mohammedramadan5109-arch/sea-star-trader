@@ -8,7 +8,7 @@ import { useLanguage } from '@/components/providers/LanguageProvider';
 export function Footer() {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
-  const { t } = useLanguage();
+  const { t, tk } = useLanguage();
 
   const handleNewsletterSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -57,10 +57,11 @@ export function Footer() {
             </div>
             <ul className="space-y-2 text-sm">
               <li><Link href="/services" style={{ color: 'var(--slate)' }} className="hover:text-orange-600 transition-colors">{t('footer.allServices')}</Link></li>
-              <li><Link href="/services/shipping-logistics" style={{ color: 'var(--slate)' }} className="hover:text-orange-600 transition-colors">{t('footer.shippingLogistics')}</Link></li>
+              <li><Link href="/services/shipping" style={{ color: 'var(--slate)' }} className="hover:text-orange-600 transition-colors">{t('footer.shippingLogistics')}</Link></li>
               <li><Link href="/financing" style={{ color: 'var(--slate)' }} className="hover:text-orange-600 transition-colors">{t('footer.financing')}</Link></li>
-              <li><Link href="/services/inspection-certification" style={{ color: 'var(--slate)' }} className="hover:text-orange-600 transition-colors">{t('footer.inspection')}</Link></li>
-              <li><Link href="/services/insurance" style={{ color: 'var(--slate)' }} className="hover:text-orange-600 transition-colors">{t('footer.insurance')}</Link></li>
+              <li><Link href="/services/inspection" style={{ color: 'var(--slate)' }} className="hover:text-orange-600 transition-colors">{t('footer.inspection')}</Link></li>
+              <li><Link href="/services/appraisal" style={{ color: 'var(--slate)' }} className="hover:text-orange-600 transition-colors">{tk('services', 'Appraisal')}</Link></li>
+              <li><Link href="/services/refurbishing" style={{ color: 'var(--slate)' }} className="hover:text-orange-600 transition-colors">{tk('services', 'Refurbishing')}</Link></li>
             </ul>
           </div>
 

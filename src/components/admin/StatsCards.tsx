@@ -1,4 +1,4 @@
-import { Users, ListChecks, ClipboardList, FileSearch } from 'lucide-react';
+import { Users, ListChecks, ClipboardList, FileSearch, PackageCheck } from 'lucide-react';
 
 interface StatsCardsProps {
   stats: {
@@ -8,6 +8,7 @@ interface StatsCardsProps {
     listingsTrend: number;
     pendingListings: number;
     valuationRequests: number;
+    serviceRequests: number;
   };
 }
 
@@ -58,7 +59,7 @@ function Card({
 
 export function StatsCards({ stats }: StatsCardsProps) {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
       <Card label="Total users" value={stats.users.toLocaleString()} icon={<Users size={16} />} trend={stats.usersTrend} />
       <Card label="Total listings" value={stats.listings.toLocaleString()} icon={<ListChecks size={16} />} trend={stats.listingsTrend} />
       <Card
@@ -72,6 +73,12 @@ export function StatsCards({ stats }: StatsCardsProps) {
         value={stats.valuationRequests.toLocaleString()}
         icon={<FileSearch size={16} />}
         highlight={stats.valuationRequests > 0}
+      />
+      <Card
+        label="Pending service requests"
+        value={stats.serviceRequests.toLocaleString()}
+        icon={<PackageCheck size={16} />}
+        highlight={stats.serviceRequests > 0}
       />
     </div>
   );

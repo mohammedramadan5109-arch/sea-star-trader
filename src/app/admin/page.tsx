@@ -25,6 +25,7 @@ export default async function AdminDashboardPage() {
     { count: listingsCount },
     { count: pendingListings },
     { count: valuationRequests },
+    { count: serviceRequests },
     { data: allListings },
     { data: recentListings },
     { data: topListings },
@@ -35,6 +36,7 @@ export default async function AdminDashboardPage() {
     supabase.from('listings').select('*', { count: 'exact', head: true }),
     supabase.from('listings').select('*', { count: 'exact', head: true }).eq('status', 'pending'),
     supabase.from('valuation_requests').select('*', { count: 'exact', head: true }).eq('status', 'pending'),
+    supabase.from('service_requests').select('*', { count: 'exact', head: true }).eq('status', 'pending'),
     supabase.from('listings').select('created_at'),
     supabase.from('listings').select('id, make, model, year, status, created_at').order('created_at', { ascending: false }).limit(6),
     supabase.from('listings').select('id, make, model, year, asking_price, status').eq('status', 'active').order('asking_price', { ascending: false }).limit(5),
@@ -73,6 +75,7 @@ export default async function AdminDashboardPage() {
           listingsTrend: pct(listingsThisMonth, listingsPrevMonth),
           pendingListings: pendingListings || 0,
           valuationRequests: valuationRequests || 0,
+          serviceRequests: serviceRequests || 0,
         }}
       />
 

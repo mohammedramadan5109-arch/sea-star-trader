@@ -10,11 +10,18 @@ import toast from 'react-hot-toast';
 interface BulkPhotoUploaderProps {
   onPhotosChange: (urls: string[]) => void;
   maxPhotos?: number;
+  /** Override the field name shown above the upload box. */
+  label?: string;
+  /** Whether the count row shows the "required" asterisk. Defaults to
+   *  true so the existing sell form keeps its current appearance. */
+  required?: boolean;
 }
 
 export function BulkPhotoUploader({ 
   onPhotosChange, 
-  maxPhotos = 100 
+  maxPhotos = 100,
+  label = 'Equipment Photos',
+  required = true,
 }: BulkPhotoUploaderProps) {
   const [photos, setPhotos] = useState<string[]>([]);
   const [uploading, setUploading] = useState(false);
@@ -106,7 +113,7 @@ export function BulkPhotoUploader({
       {/* Upload Button */}
       <div>
         <label className="block text-sm font-semibold mb-2" style={{ color: 'var(--navy)' }}>
-          Equipment Photos * ({photos.length}/{maxPhotos})
+          {label}{required ? ' *' : ''} ({photos.length}/{maxPhotos})
         </label>
         
         <div 

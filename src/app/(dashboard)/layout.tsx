@@ -71,6 +71,13 @@ export default async function DashboardLayout({
               My Bids
             </Link>
             <Link
+              href="/service-requests"
+              className="block px-4 py-2 text-sm font-medium rounded-sm hover:bg-[var(--off-white)]"
+              style={{ color: 'var(--navy)' }}
+            >
+              My Service Requests
+            </Link>
+            <Link
               href="/orders"
               className="block px-4 py-2 text-sm font-medium rounded-sm hover:bg-[var(--off-white)]"
               style={{ color: 'var(--navy)' }}
