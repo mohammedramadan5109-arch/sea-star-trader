@@ -28,6 +28,12 @@ yarn-error.log*
 # local dev server logs
 dev-server.log
 dev-rest.log
+.devserver.log
+.devserver.pid
+
+# local verification artifacts
+.audit/
+screenshots/
 
 # one-off password recovery links (contain live tokens, never commit)
 password-reset-link.txt
