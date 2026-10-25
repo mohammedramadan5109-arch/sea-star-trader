@@ -17,6 +17,9 @@ export interface ServicePageContent {
   keyword: string;
   tagline: string;
   heroCta: string;
+  /** Optional full-bleed photo behind the hero (free-license, bundled locally).
+   *  Served from /public; a dark overlay in ServicePageBase keeps text readable. */
+  heroImage?: string;
   intro: string;
   subject: string;
   steps: { title: string; body: string }[];
@@ -32,6 +35,7 @@ export const SERVICE_PAGES: Record<ServicePageContent['slug'], ServicePageConten
     keyword: 'Shipping',
     tagline: 'Door-to-door or port-to-port transport for excavators, loaders, cranes and every heavy machine between.',
     heroCta: 'Get a shipping quote',
+    heroImage: '/images/services/shipping.jpg',
     intro:
       'A 20-ton excavator is not a parcel. It needs the right vessel slot, the right lifting gear and paperwork that clears customs the first time. We arrange container, flat-rack, roll-on/roll-off and breakbulk shipments worldwide, and quote on request once we know the machine, the route and your deadline.',
     subject: 'a shipping quote',
@@ -71,6 +75,7 @@ export const SERVICE_PAGES: Record<ServicePageContent['slug'], ServicePageConten
     keyword: 'Inspection',
     tagline: 'A certified third-party inspection of any machine before you commit to buying it.',
     heroCta: 'Book an inspection',
+    heroImage: '/images/services/inspection.jpg',
     intro:
       'Buying an excavator you have never stood next to is the biggest single risk in cross-border equipment trade. Our certified inspectors put eyes, gauges and cameras on the machine wherever it stands, and turn what they find into a scored condition report you can negotiate with — the same standard behind the inspection score on every SeaStarTrader listing.',
     subject: 'an equipment inspection',
@@ -112,6 +117,7 @@ export const SERVICE_PAGES: Record<ServicePageContent['slug'], ServicePageConten
     keyword: 'Appraisal',
     tagline: 'A formal market-value appraisal of the equipment you own — selling, insuring or financing.',
     heroCta: 'Request an appraisal',
+    heroImage: '/images/services/appraisal.jpg',
     intro:
       'Every price you put on a machine has to answer to somebody — a buyer, an insurance adjuster or a lender. Our appraisal desk values your equipment against live market comparables and recent auction results for the same make, model, year and hours, and delivers a report you can act on.',
     subject: 'an equipment appraisal',
@@ -142,6 +148,7 @@ export const SERVICE_PAGES: Record<ServicePageContent['slug'], ServicePageConten
     keyword: 'Refurbishing',
     tagline: 'Repaint, rebuild and recondition heavy equipment before it goes back on the market.',
     heroCta: 'Start refurbishing',
+    heroImage: '/images/services/refurbishing.jpg',
     intro:
       'A tired machine sells slow and sells cheap. Our refurbishing assessment looks at your excavator, loader or crane and tells you exactly which works — mechanical service, hydraulic repairs, repaint, undercarriage or a full rebuild — will convert into a better sale price, before you spend anything on the workshop.',
     subject: 'a refurbishing assessment',

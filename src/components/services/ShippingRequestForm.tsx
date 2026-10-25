@@ -104,6 +104,15 @@ export function ShippingRequestForm({
           </FormField>
         )}
 
+        <FormField label="Equipment location" error={errors.equipment_location?.message}>
+          <Input
+            {...register('equipment_location')}
+            type="text"
+            placeholder="e.g. Yard in 6th of October City, Giza"
+            error={errors.equipment_location?.message}
+          />
+        </FormField>
+
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <FormField label="Pickup country" error={errors.pickup_country?.message} required>
             <Input

@@ -3,6 +3,7 @@ import { Cairo } from 'next/font/google';
 import { Toaster } from 'react-hot-toast';
 import { QueryProvider } from '@/components/providers/QueryProvider';
 import { LanguageProvider } from '@/components/providers/LanguageProvider';
+import { ButtonEffects } from '@/components/ui/ButtonEffects';
 import './globals.css';
 
 const cairo = Cairo({
@@ -28,6 +29,7 @@ export default function RootLayout({
         <QueryProvider>
           <LanguageProvider>
             {children}
+            <ButtonEffects />
             <Toaster position="bottom-right" />
           </LanguageProvider>
         </QueryProvider>

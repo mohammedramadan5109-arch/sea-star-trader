@@ -185,6 +185,57 @@ a {
   }
 }
 
+/* ------------------------------------------------------------------ */
+/* Button glow + magnetic lean (fx). The engine (ButtonEffects) writes  */
+/* --fx-x/--fx-y for the cursor-following glow and drives the lean via   */
+/* the `translate` property, which composes with other transform effects */
+/* like .btn-3d's lift instead of overriding them. Colors/sizes unchanged. */
+/* ------------------------------------------------------------------ */
+
+.fx-btn {
+  position: relative;
+  isolation: isolate;
+  /* Keep hover/press transitions snappy but exclude `translate`, which the */
+  /* magnetic engine updates every frame (transition all would make it lag). */
+  transition-property: transform, scale, box-shadow, background-color, color, border-color, opacity !important;
+}
+
+/* Cursor-following glow, positioned at --fx-x/--fx-y (set per-pointermove). */
+.fx-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  background: radial-gradient(
+    90px circle at var(--fx-x, 50%) var(--fx-y, 50%),
+    rgba(245, 179, 36, 0.28),
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.fx-btn:hover::before {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fx-btn::before {
+    transition: none;
+  }
+}
+
+/* Frosted glass panel — same recipe as the hero search bar: translucent
+   white, blurred backdrop, soft white border. Stays readable on any
+   background and lets the page show through. Pair with `backdrop-blur-md`
+   (Tailwind utility survives the CSS minifier, plain CSS gets stripped). */
+.glass-card {
+  background-color: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
 /* Touch devices have no real hover state — force gallery controls
    (prev/next arrows) to always be visible instead of relying on
    :hover, which can appear to "stick" on one element after a tap. */

@@ -176,14 +176,11 @@ export default async function ServiceDetailPage({
       case 'inspection':
         return (
           <section className="max-w-4xl mx-auto px-6 py-10">
-            <div
-              className="rounded-lg border p-6 sm:p-8 card-tilt"
-              style={{ backgroundColor: 'var(--paper-solid)', borderColor: 'var(--line)' }}
-            >
-              <h2 className="text-xl font-extrabold mb-2" style={{ color: 'var(--navy-solid)' }}>
+            <div className="glass-card backdrop-blur-md rounded-lg p-6 sm:p-8 card-tilt">
+              <h2 className="text-xl font-extrabold mb-2" style={{ color: 'var(--navy)' }}>
                 Example inspection report
               </h2>
-              <p className="text-sm mb-5" style={{ color: 'var(--navy-solid)' }}>
+              <p className="text-sm mb-5" style={{ color: 'var(--slate)' }}>
                 Every report uses the same 120-point standard that produces the
                 inspection score shown on SeaStarTrader listings.
               </p>
@@ -196,7 +193,7 @@ export default async function ServiceDetailPage({
                   'Cab & electrics — controls, displays, safety devices',
                   'Photos & video — full walk-around evidence attached',
                 ].map((item) => (
-                  <p key={item} className="text-sm" style={{ color: 'var(--navy-solid)' }}>
+                  <p key={item} className="text-sm" style={{ color: 'var(--ink)' }}>
                     {item}
                   </p>
                 ))}

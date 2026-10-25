@@ -30,6 +30,7 @@ export function useSubmitShippingRequest() {
           contact_phone: data.contact_phone || null,
           details: {
             equipment_description: data.equipment_description || null,
+            equipment_location: data.equipment_location || null,
             pickup_country: data.pickup_country,
             pickup_city: data.pickup_city,
             destination_country: data.destination_country,

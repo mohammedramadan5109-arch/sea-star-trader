@@ -14,8 +14,10 @@ export function Button({
   children,
   ...props
 }: ButtonProps) {
-  // rounded-lg = slight radius, matching the repainted mockup's softer corners
-  const baseStyles = 'text-sm font-semibold rounded-lg transition-all duration-150 active:scale-[0.97] focus:outline-none focus:ring-2 focus:ring-offset-2';
+  // rounded-lg = slight radius, matching the repainted mockup's softer corners.
+  // fx-btn enables the site-wide effects (cursor-following glow, magnetic lean)
+  // without touching colors, shapes, or sizes.
+  const baseStyles = 'fx-btn text-sm font-semibold rounded-lg transition-all duration-150 active:scale-[0.97] focus:outline-none focus:ring-2 focus:ring-offset-2';
 
   const variants = {
     primary: 'bg-[var(--orange)] text-[var(--paper)] hover:opacity-90 focus:ring-orange-500',
@@ -31,6 +33,7 @@ export function Button({
 
   return (
     <button
+      data-fx-btn
       className={cn(baseStyles, variants[variant], sizes[size], className)}
       {...props}
     >

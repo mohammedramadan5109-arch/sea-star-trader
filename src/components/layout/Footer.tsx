@@ -95,7 +95,8 @@ export function Footer() {
               <button
                 type="submit"
                 disabled={loading}
-                className="px-4 py-2 text-sm font-semibold rounded-lg disabled:opacity-50 hover:opacity-90 transition-opacity"
+                data-fx-btn
+                className="fx-btn px-4 py-2 text-sm font-semibold rounded-lg disabled:opacity-50 hover:opacity-90 transition-opacity"
                 style={{ backgroundColor: 'var(--orange)', color: 'var(--paper)' }}
               >
                 {loading ? t('footer.signingUp') : t('footer.signUp')}

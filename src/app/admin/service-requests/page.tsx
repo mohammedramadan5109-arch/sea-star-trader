@@ -57,6 +57,7 @@ function detailsSummary(details: Record<string, unknown> | null): string {
     if (v) lines.push(`${label}: ${v.replace('_', ' ')}`);
   };
   push('Equipment', 'equipment_description');
+  push('Location', 'equipment_location');
   push('Pickup', 'pickup_city');
   push('Destination', 'destination');
   push('Method', 'shipping_method');

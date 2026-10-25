@@ -30,6 +30,11 @@ export const shippingRequestSchema = serviceContactSchema.extend({
   listing_id: listingIdSchema,
   /** Free-text description used when no listing is linked. */
   equipment_description: z.string().max(200, 'Keep the description under 200 characters').optional(),
+  /** Where the machine currently stands — yard, site, port. */
+  equipment_location: z
+    .string()
+    .max(200, 'Keep the location under 200 characters')
+    .optional(),
   pickup_country: z.string().min(1, 'Pickup country is required'),
   pickup_city: z.string().min(1, 'Pickup city is required'),
   destination_country: z.string().min(1, 'Destination country is required'),

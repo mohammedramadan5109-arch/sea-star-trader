@@ -28,8 +28,26 @@ export function ServicePageBase({
 }: ServicePageBaseProps) {
   return (
     <>
-      {/* 1 — Hero */}
-      <section className="max-w-6xl mx-auto px-6 pt-16 pb-10">
+      {/* 1 — Hero (full-bleed photo per service, dark overlay for readability) */}
+      <section className="relative overflow-hidden">
+        {content.heroImage && (
+          <>
+            <div
+              aria-hidden="true"
+              className="absolute inset-0 bg-cover bg-center"
+              style={{ backgroundImage: `url(${content.heroImage})` }}
+            />
+            <div
+              aria-hidden="true"
+              className="absolute inset-0"
+              style={{
+                background:
+                  'linear-gradient(to bottom, rgba(10, 21, 32, 0.82) 0%, rgba(10, 21, 32, 0.86) 60%, var(--paper) 100%)',
+              }}
+            />
+          </>
+        )}
+        <div className="relative max-w-6xl mx-auto px-6 pt-16 pb-10">
         <div className="flex items-start gap-5 mb-6 animate-fade-in-up">
           <span
             className="p-3 rounded-lg shrink-0 mt-1"
@@ -56,6 +74,7 @@ export function ServicePageBase({
         >
           {content.heroCta}
         </Link>
+        </div>
       </section>
 
       {/* 2 — How it works */}
@@ -112,16 +131,13 @@ export function ServicePageBase({
           ))}
         </div>
         {content.infoNote && (
-          <div
-            className="rounded-lg border p-6 mt-6"
-            style={{ backgroundColor: 'var(--paper-solid)', borderColor: 'var(--line)' }}
-          >
-            <h3 className="text-sm font-bold uppercase tracking-wide mb-3" style={{ color: 'var(--navy-solid)' }}>
+          <div className="glass-card backdrop-blur-md rounded-lg p-6 mt-6">
+            <h3 className="text-sm font-bold uppercase tracking-wide mb-3" style={{ color: 'var(--navy)' }}>
               {content.infoNote.title}
             </h3>
             <ul className="space-y-2">
               {content.infoNote.items.map((item) => (
-                <li key={item} className="text-sm flex gap-2" style={{ color: 'var(--navy-solid)' }}>
+                <li key={item} className="text-sm flex gap-2" style={{ color: 'var(--ink)' }}>
                   <span className="mt-1.5 w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: 'var(--orange)' }} />
                   {item}
                 </li>
