@@ -216,11 +216,13 @@ export default async function ListingDetailPage({
               </div>
             )}
 
-            <ListingActions
-              emailSubject={emailSubject}
-              emailBody={emailBody}
-              whatsappMessage={whatsappMessage}
-            />
+            <div id="inquire" className="scroll-mt-24">
+              <ListingActions
+                emailSubject={emailSubject}
+                emailBody={emailBody}
+                whatsappMessage={whatsappMessage}
+              />
+            </div>
 
             {/* Small service cross-links; plain links so the page layout is untouched. */}
             <div className="mt-3 flex flex-col gap-1 text-xs" style={{ color: 'var(--lst-text-muted)' }}>

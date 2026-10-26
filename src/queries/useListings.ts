@@ -8,8 +8,12 @@ interface UseListingsParams {
   subcategory?: string;
   search?: string;
   location?: string;
+  /** Maximum operating hours (listings with hours <= this). */
+  maxHours?: number;
+  /** Maximum asking price (listings with asking_price <= this). */
+  maxPrice?: number;
   limit?: number;
-  orderBy?: 'created_at' | 'price';
+  orderBy?: 'created_at' | 'price' | 'price_desc' | 'hours_asc' | 'hours_desc';
   /** Only return listings the admin has marked as featured (used by the
    *  homepage's Latest Equipment section). Falls back to filling in with
    *  the latest non-featured listings if fewer than `limit` are featured,
@@ -25,6 +29,7 @@ export interface Listing {
   year: string | null;
   condition: string | null;
   location: string;
+  hours: number | null;
   photos: string[] | null;
   asking_price: number | null;
   created_at: string;
@@ -40,13 +45,18 @@ export function useListings(params: UseListingsParams = {}) {
     subcategory,
     search,
     location,
+    maxHours,
+    maxPrice,
     limit = 50,
     orderBy = 'created_at',
     featured = false,
   } = params;
 
   return useQuery({
-    queryKey: ['listings', { category, subcategory, search, location, limit, orderBy, featured }],
+    queryKey: [
+      'listings',
+      { category, subcategory, search, location, maxHours, maxPrice, limit, orderBy, featured },
+    ],
     queryFn: async (): Promise<Listing[]> => {
       const supabase = createClient();
 
@@ -62,11 +72,19 @@ export function useListings(params: UseListingsParams = {}) {
           );
         }
         if (location) query = query.ilike('location', `%${location}%`);
+        if (maxHours) query = query.lte('hours', maxHours);
+        if (maxPrice) query = query.lte('asking_price', maxPrice);
 
         if (orderBy === 'created_at') {
           query = query.order('created_at', { ascending: false });
         } else if (orderBy === 'price') {
           query = query.order('asking_price', { ascending: true });
+        } else if (orderBy === 'price_desc') {
+          query = query.order('asking_price', { ascending: false });
+        } else if (orderBy === 'hours_asc') {
+          query = query.order('hours', { ascending: true, nullsFirst: false });
+        } else if (orderBy === 'hours_desc') {
+          query = query.order('hours', { ascending: false });
         }
 
         return query;

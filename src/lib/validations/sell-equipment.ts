@@ -7,7 +7,7 @@ export const sellEquipmentSchema = z.object({
   make: z.string().min(1, 'Make is required'),
   model: z.string().min(1, 'Model is required'),
   year: z.string().regex(/^\d{4}$/, 'Year must be 4 digits'),
-  condition: z.enum(['Excellent', 'Good', 'Fair', 'Needs Repair']),
+  condition: z.enum(['New', 'Used']),
   location: z.string().min(1, 'Location is required'),
   description: z.string().optional(),
   asking_price: z.number().positive('Price must be positive').optional(),

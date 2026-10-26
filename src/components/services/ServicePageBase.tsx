@@ -42,7 +42,7 @@ export function ServicePageBase({
               className="absolute inset-0"
               style={{
                 background:
-                  'linear-gradient(to bottom, rgba(10, 21, 32, 0.82) 0%, rgba(10, 21, 32, 0.86) 60%, var(--paper) 100%)',
+                  'linear-gradient(to bottom, rgba(10, 21, 32, 0.45) 0%, rgba(10, 21, 32, 0.28) 60%, var(--paper) 100%)',
               }}
             />
           </>

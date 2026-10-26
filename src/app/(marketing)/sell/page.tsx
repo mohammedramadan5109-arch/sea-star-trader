@@ -27,7 +27,7 @@ const sellEquipmentSchema = z.object({
   make: z.string().min(1, 'Make is required'),
   model: z.string().min(1, 'Model is required'),
   year: z.string().min(4, 'Year is required').max(4, 'Year must be 4 digits'),
-  condition: z.enum(['Excellent', 'Good', 'Fair', 'Needs Repair'], {
+  condition: z.enum(['New', 'Used'], {
     errorMap: () => ({ message: 'Please select a condition' })
   }),
   location: z.string().min(1, 'Location is required'),
@@ -250,10 +250,8 @@ export default function SellPage() {
             <FormField label="Condition" error={errors.condition?.message} required>
               <Select {...register('condition')} error={errors.condition?.message}>
                 <option value="">Select condition</option>
-                <option value="Excellent">Excellent</option>
-                <option value="Good">Good</option>
-                <option value="Fair">Fair</option>
-                <option value="Needs Repair">Needs Repair</option>
+                <option value="New">New</option>
+                <option value="Used">Used</option>
               </Select>
             </FormField>
           </div>

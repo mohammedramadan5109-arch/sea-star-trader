@@ -5,6 +5,14 @@ import { CATEGORIES, CATEGORY_SLUGS, CATEGORY_STRUCTURE } from '@/lib/constants/
 import { slugify } from '@/lib/utils/slugify';
 import { useLanguage } from '@/components/providers/LanguageProvider';
 
+// Number parser shared by the price input: keeps digits only so typed
+// values like "12,000" never break the URL query.
+function toNumber(value: string): number | undefined {
+  const digits = value.replace(/[^\d]/g, '');
+  if (!digits) return undefined;
+  return parseInt(digits, 10);
+}
+
 export function ListingFilters() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -12,27 +20,42 @@ export function ListingFilters() {
 
   const currentCategory = searchParams.get('category') || '';
   const currentSubcategory = searchParams.get('subcategory') || '';
+  const currentHours = searchParams.get('max-hours') || '';
+  const currentPrice = searchParams.get('max-price') || '';
 
-  const handleCategoryChange = (categorySlug: string) => {
+  const pushParams = (mutate: (params: URLSearchParams) => void) => {
     const params = new URLSearchParams(searchParams.toString());
-    if (categorySlug) {
-      params.set('category', categorySlug);
-      params.delete('subcategory');
-    } else {
-      params.delete('category');
-      params.delete('subcategory');
-    }
+    mutate(params);
     router.push(`/listings?${params.toString()}`);
   };
 
+  const handleCategoryChange = (categorySlug: string) => {
+    pushParams((params) => {
+      if (categorySlug) {
+        params.set('category', categorySlug);
+        params.delete('subcategory');
+      } else {
+        params.delete('category');
+        params.delete('subcategory');
+      }
+    });
+  };
+
   const handleSubcategoryChange = (subcategorySlug: string) => {
-    const params = new URLSearchParams(searchParams.toString());
-    if (subcategorySlug) {
-      params.set('subcategory', subcategorySlug);
-    } else {
-      params.delete('subcategory');
-    }
-    router.push(`/listings?${params.toString()}`);
+    pushParams((params) => {
+      if (subcategorySlug) {
+        params.set('subcategory', subcategorySlug);
+      } else {
+        params.delete('subcategory');
+      }
+    });
+  };
+
+  const handleHoursChange = (value: string) => {
+    pushParams((params) => {
+      if (value) params.set('max-hours', value);
+      else params.delete('max-hours');
+    });
   };
 
   const currentCategoryName = Object.keys(CATEGORY_SLUGS).find(
@@ -40,19 +63,26 @@ export function ListingFilters() {
   );
   const subcategories = currentCategoryName ? CATEGORY_STRUCTURE[currentCategoryName] : [];
 
+  const selectClass = 'w-full px-3 py-2 text-sm rounded-sm border focus:outline-none';
+  const selectStyle = {
+    borderColor: 'var(--line)',
+    backgroundColor: 'var(--off-white)',
+    color: 'var(--ink)',
+  } as React.CSSProperties;
+  const headingClass = 'text-sm font-bold uppercase tracking-wide mb-3';
+
   return (
-    <aside
-      className="w-full lg:w-64 shrink-0 pb-6 lg:pb-0 border-b lg:border-b-0 lg:border-r border-[var(--line)] lg:pr-6"
-    >
+    <aside className="w-full lg:w-64 shrink-0 pb-6 lg:pb-0 border-b lg:border-b-0 lg:border-r border-[var(--line)] lg:pr-6">
+      {/* Category */}
       <div className="mb-6">
-        <h3 className="text-sm font-bold uppercase tracking-wide mb-3" style={{ color: 'var(--navy)' }}>
+        <h3 className={headingClass} style={{ color: 'var(--navy)' }}>
           {t('listings.category')}
         </h3>
         <select
           value={currentCategory}
           onChange={(e) => handleCategoryChange(e.target.value)}
-          className="w-full px-3 py-2 text-sm rounded-sm border focus:outline-none"
-          style={{ borderColor: 'var(--line)', backgroundColor: 'var(--paper)', color: 'var(--ink)' }}
+          className={selectClass}
+          style={selectStyle}
         >
           <option value="">{t('listings.allCategories')}</option>
           {CATEGORIES.map((cat) => (
@@ -63,16 +93,17 @@ export function ListingFilters() {
         </select>
       </div>
 
+      {/* Subcategory */}
       {subcategories.length > 0 && (
         <div className="mb-6">
-        <h3 className="text-sm font-bold uppercase tracking-wide mb-3" style={{ color: 'var(--navy)' }}>
-          {t('listings.subcategory')}
-        </h3>
+          <h3 className={headingClass} style={{ color: 'var(--navy)' }}>
+            {t('listings.subcategory')}
+          </h3>
           <select
             value={currentSubcategory}
             onChange={(e) => handleSubcategoryChange(e.target.value)}
-            className="w-full px-3 py-2 text-sm rounded-sm border focus:outline-none"
-            style={{ borderColor: 'var(--line)', backgroundColor: 'var(--paper)', color: 'var(--ink)' }}
+            className={selectClass}
+            style={selectStyle}
           >
             <option value="">{t('listings.allSubcategories')}</option>
             {subcategories.map((sub) => (
@@ -84,8 +115,28 @@ export function ListingFilters() {
         </div>
       )}
 
+      {/* Hours */}
       <div className="mb-6">
-        <h3 className="text-sm font-bold uppercase tracking-wide mb-3" style={{ color: 'var(--navy)' }}>
+        <h3 className={headingClass} style={{ color: 'var(--navy)' }}>
+          Hours
+        </h3>
+        <select
+          value={currentHours}
+          onChange={(e) => handleHoursChange(e.target.value)}
+          className={selectClass}
+          style={selectStyle}
+        >
+          <option value="">Any hours</option>
+          <option value="1000">Under 1,000 hrs</option>
+          <option value="5000">Under 5,000 hrs</option>
+          <option value="10000">Under 10,000 hrs</option>
+          <option value="20000">Under 20,000 hrs</option>
+        </select>
+      </div>
+
+      {/* Location */}
+      <div className="mb-6">
+        <h3 className={headingClass} style={{ color: 'var(--navy)' }}>
           {t('listings.location')}
         </h3>
         <input
@@ -93,16 +144,35 @@ export function ListingFilters() {
           placeholder={t('listings.locationPlaceholder')}
           defaultValue={searchParams.get('location') || ''}
           onBlur={(e) => {
-            const params = new URLSearchParams(searchParams.toString());
-            if (e.target.value) {
-              params.set('location', e.target.value);
-            } else {
-              params.delete('location');
-            }
-            router.push(`/listings?${params.toString()}`);
+            pushParams((params) => {
+              if (e.target.value.trim()) params.set('location', e.target.value.trim());
+              else params.delete('location');
+            });
           }}
-          className="w-full px-3 py-2 text-sm rounded-sm border focus:outline-none"
-          style={{ borderColor: 'var(--line)', backgroundColor: 'var(--paper)', color: 'var(--ink)' }}
+          className={selectClass}
+          style={selectStyle}
+        />
+      </div>
+
+      {/* Max price */}
+      <div className="mb-6">
+        <h3 className={headingClass} style={{ color: 'var(--navy)' }}>
+          Max price (USD)
+        </h3>
+        <input
+          type="number"
+          min={0}
+          placeholder="e.g. 150000"
+          defaultValue={currentPrice}
+          onBlur={(e) => {
+            const value = toNumber(e.target.value);
+            pushParams((params) => {
+              if (value) params.set('max-price', String(value));
+              else params.delete('max-price');
+            });
+          }}
+          className={selectClass}
+          style={selectStyle}
         />
       </div>
 
