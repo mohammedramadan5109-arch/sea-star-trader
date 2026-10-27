@@ -45,7 +45,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
 
   return (
     <div
-      className="min-h-screen flex"
+      className="min-h-screen flex flex-col md:flex-row"
       style={{ ...ADMIN_THEME, backgroundColor: 'var(--admin-bg)' }}
     >
       <aside
@@ -80,7 +80,32 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           ))}
         </nav>
       </aside>
-      <main className="flex-1 px-6 py-8 md:px-10">{children}</main>
+      {/* Mobile top nav: the sidebar is hidden below md, so give the strip instead. */}
+      <div
+        className="md:hidden border-b overflow-x-auto"
+        style={{ borderColor: 'var(--admin-border)' }}
+      >
+        <nav className="flex items-center gap-1 px-3 py-2 whitespace-nowrap">
+          <Link
+            href="/"
+            className="rounded-md px-3 py-2 text-sm font-semibold"
+            style={{ color: 'var(--admin-accent)' }}
+          >
+            Homepage
+          </Link>
+          {NAV.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className="rounded-md px-3 py-2 text-sm font-medium"
+              style={{ color: 'var(--admin-text-muted)' }}
+            >
+              {item.label}
+            </Link>
+          ))}
+        </nav>
+      </div>
+      <main className="flex-1 min-w-0 px-4 py-6 md:px-10 md:py-8">{children}</main>
     </div>
   );
 }

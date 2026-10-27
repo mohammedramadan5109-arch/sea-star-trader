@@ -37,7 +37,7 @@ export function SidebarMegaMenu({
 
   return (
     <div className="flex">
-      {/* Left column */}
+      {/* Left column: the menu's own list. */}
       <div className="w-64" style={{ backgroundColor: BG_DARK }}>
         <div className="p-4 border-b" style={{ borderColor: BORDER }}>
           <Link
@@ -78,10 +78,12 @@ export function SidebarMegaMenu({
         </nav>
       </div>
 
-      {/* Right column */}
-      <div className="p-6" style={{ backgroundColor: BG_SURFACE, minWidth: '450px' }}>
-        {hasSubcategories ? (
-          hoveredItem ? (
+      {/* Right column: only meaningful for subcategory menus. For flat
+          menus (services, how-it-works) there is nothing to preview, so
+          don't render the column at all — it used to duplicate the list. */}
+      {hasSubcategories && (
+        <div className="p-6" style={{ backgroundColor: BG_SURFACE, minWidth: '450px' }}>
+          {hoveredItem ? (
             <div className="grid grid-cols-2 gap-x-4 gap-y-1">
               {items
                 .find((item) => item.label === hoveredItem)
@@ -115,30 +117,9 @@ export function SidebarMegaMenu({
             <div className="py-12 text-center text-sm" style={{ color: TEXT_MUTED }}>
               {t('nav.hoverCategory')}
             </div>
-          )
-        ) : (
-          <div className="space-y-1">
-            {items.map((item) => (
-              <Link
-                key={item.label}
-                href={item.href}
-                className="block px-3 py-2 text-sm rounded-md transition-colors"
-                style={{ color: TEXT }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = BG_DARK;
-                  e.currentTarget.style.color = ACCENT;
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = 'transparent';
-                  e.currentTarget.style.color = TEXT;
-                }}
-              >
-                {item.label}
-              </Link>
-            ))}
-          </div>
-        )}
-      </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }

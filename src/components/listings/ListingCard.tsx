@@ -8,7 +8,7 @@ import type { Listing } from '@/queries/useListings';
 /** A listing is "Just in" for 14 days after it goes live, then plain Available. */
 const JUST_IN_DAYS = 14;
 
-export function ListingCard({ listing }: { listing: Listing }) {
+export function ListingCard({ listing, className = '' }: { listing: Listing; className?: string }) {
   const photo = listing.photos?.[0];
   const title = `${listing.year ? listing.year + ' ' : ''}${listing.make} ${listing.model}`;
   const href = `/listings/${listing.id}`;
@@ -22,7 +22,7 @@ export function ListingCard({ listing }: { listing: Listing }) {
 
   return (
     <div
-      className="relative flex flex-col rounded-md overflow-hidden border hover:shadow-xl transition-all duration-200"
+      className={`relative flex flex-col rounded-md overflow-hidden border hover:shadow-xl transition-all duration-200 ${className}`}
       style={{ backgroundColor: 'var(--off-white)', borderColor: 'var(--line)' }}
     >
       {/* Photo area (also links) */}
@@ -45,7 +45,7 @@ export function ListingCard({ listing }: { listing: Listing }) {
       </span>
 
       {/* Body */}
-      <div className="p-4 flex flex-col gap-2 flex-1">
+      <div className="p-4 flex flex-col gap-2">
         <Link href={href}>
           <h3 className="font-bold text-sm sm:text-base leading-snug" style={{ color: 'var(--ink)' }}>
             {title}

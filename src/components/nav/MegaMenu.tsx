@@ -20,7 +20,6 @@ export function MegaMenu({ children, isOpen, onClose }: MegaMenuProps) {
         style={{
           border: '1px solid #1C3040',
           backgroundColor: '#0F1E2D',
-          minWidth: '700px',
         }}
       >
         {children}

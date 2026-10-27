@@ -59,12 +59,12 @@ export function ServicePageBase({
             <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: 'var(--orange)' }}>
               Sea Star Trader Services
             </p>
-            <h1 className="text-3xl sm:text-5xl font-extrabold leading-tight" style={{ color: 'var(--navy)' }}>
+            <h1 className="text-3xl sm:text-5xl font-extrabold leading-tight text-white">
               {content.keyword}
             </h1>
           </div>
         </div>
-        <p className="text-lg sm:text-xl max-w-3xl mb-8 animate-fade-in-up" style={{ color: 'var(--slate)' }}>
+        <p className="text-lg sm:text-xl max-w-3xl mb-8 animate-fade-in-up text-white">
           {content.tagline}
         </p>
         <Link
